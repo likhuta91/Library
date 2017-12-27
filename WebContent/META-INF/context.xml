@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Context path="/META-INF" docBase="/META-INF" crossContext="true"
+	reloadable="true" debug="1">
+	<Resource name="jdbc/appname" auth="Container" type="javax.sql.DataSource"
+		driverClassName="org.gjt.mm.mysql.Driver" url="jdbc:mysql://127.0.0.1/Library?useSSL=false"
+		username="root" password="86231612" maxActive="100" maxIdle="30"
+		maxWait="10000" />
+</Context>
