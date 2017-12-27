@@ -12,11 +12,9 @@ public class CharsetFilter implements Filter {
 	private String encoding;
 
     public CharsetFilter() {
-
     }
 
 	public void destroy() {
-
 	}
 
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -28,9 +26,7 @@ public class CharsetFilter implements Filter {
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {
-		
 		encoding = fConfig.getInitParameter("characterEncoding");
-		
 	}
 
 }
