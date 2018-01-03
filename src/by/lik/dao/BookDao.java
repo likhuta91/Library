@@ -9,5 +9,5 @@ public interface BookDao  {
 	boolean add(Book book) throws DAOException;
 	ArrayList<Book> searchByAuthor(String author) throws DAOException;
 	ArrayList<Book> searchByTitle(String title) throws DAOException;
-	ArrayList<Book> showAllBooks() throws DAOException;
+	ArrayList<Book> takeAllBooks(int pageNumber) throws DAOException;
 }

@@ -6,13 +6,15 @@ import java.util.Map;
 import by.lik.controller.command.Command;
 import by.lik.controller.command.impl.AddBookCommand;
 import by.lik.controller.command.impl.ChangeLocalization;
+import by.lik.controller.command.impl.ChangeUserPasswordCommand;
 import by.lik.controller.command.impl.GoToGsp;
 import by.lik.controller.command.impl.LogOutUserCommand;
 import by.lik.controller.command.impl.LoginationUserCommand;
 import by.lik.controller.command.impl.RegistrationUserCommand;
 import by.lik.controller.command.impl.SearchBookByAuthorCommand;
 import by.lik.controller.command.impl.SearchBookByTitleCommand;
-import by.lik.controller.command.impl.ShowAllBooks;
+import by.lik.controller.command.impl.TakeAllBooks;
+import by.lik.controller.command.impl.TakeAllUsers;
 
 public class CommandProvider {
 	Map<String, Command> commands = new HashMap<>();
@@ -25,8 +27,10 @@ public class CommandProvider {
 		commands.put("searchBookByTitle", new SearchBookByTitleCommand());
 		commands.put("changeLocalization", new ChangeLocalization());
 		commands.put("goToGsp", new GoToGsp());
-		commands.put("showAllBooks", new ShowAllBooks());
+		commands.put("allBooks", new TakeAllBooks());
+		commands.put("allUsers", new TakeAllUsers());
 		commands.put("logOut", new LogOutUserCommand());
+		commands.put("changeUserPassword", new ChangeUserPasswordCommand());
 		
 	}               
 

@@ -1,156 +1,43 @@
 package by.lik.dao.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Properties;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.sql.DataSource;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import by.lik.bean.User;
 import by.lik.dao.UserDao;
 import by.lik.dao.exception.DAOException;
+import by.lik.dao.helper.SQLHelper;
 
 public class SQLUserDao implements UserDao {
 
-	private String selectAllUsersQuery() {
-		return "SELECT data_users.name AS name, data_users.surname AS surname, data_users.city AS city, data_users.country AS country,"
-				+ "data_users.email AS email, users.login AS login, users.rating AS rating, user_status.status AS status "
-				+ " FROM users INNER JOIN data_users ON data_users.users_id = users.id "
-				+ "INNER JOIN user_status ON user_status.id = user_status_id";
-	}
-
-	private String selectUserQuery() {
-		return "SELECT data_users.name AS name, data_users.surname AS surname, data_users.city AS city, data_users.country AS country,"
-				+ "data_users.email AS email, users.login AS login, users.rating AS rating, user_status.status AS status "
-				+ "FROM users INNER JOIN data_users ON data_users.users_id = users.id "
-				+ "INNER JOIN user_status ON user_status.id = user_status_id WHERE login= ? AND password= ? ";
-	}
-
-	private String selectUserLoginQuery() {
-		return "SELECT login FROM users WHERE login= ?";
-	}
-
-	private String selectUserEmailQuery() {
-		return "SELECT email FROM data_users WHERE email= ?";
-	}
-
-	private String selectUserIdQuery() {
-		return "SELECT id FROM users WHERE login= ?";
-	}
-
-	private String insertUserQuery() {
-		return "INSERT INTO users (login,password,rating,user_status_id) value (?,?,?,?)";
-	}
-
-	private String insertUserDataQuery() {
-		return "INSERT INTO data_users (name,surname,city,country,email,users_id) value (?,?,?,?,?,?)";
-	}
-
-	private String deleteUserQuery() {
-		return "DELETE FROM users WHERE login = ?";
-	}
-
-	private Connection takeConnection() {
-
-/*		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-		InputStream inputStream = classLoader.getResourceAsStream("/property/loginationDatabase.properties");
-
-		Properties properties = new Properties();
-		try {
-			properties.load(inputStream);
-		} catch (IOException exception) {
-			new DAOException("error while read Database.properties", exception);
-		}
-		String url = properties.getProperty("URL");
-		String root = properties.getProperty("ROOT");
-		String password = properties.getProperty("PASSWORD");
-
-		Connection connection = null;
-		try {
-			connection = DriverManager.getConnection(url, root, password);
-		} catch (SQLException exception) {
-			exception.printStackTrace(); // stub
-			new DAOException("error while starting connection", exception);
-		}
-		*/
-		Connection connection = null;
-		InitialContext initContext;
-		try {
-			initContext = new InitialContext();
-			DataSource ds = (DataSource) initContext.lookup("java:comp/env/jdbc/appname");
-		    connection = ds.getConnection();
-		} catch (NamingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} /*finally {
-			if(connection!=null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}*/
-		
-
-		return connection;
-	}
-
-	private PreparedStatement takePreparedStatement(Connection connection, String sqlQuery) {
-
-		PreparedStatement preparedStatement = null;
-		try {
-			preparedStatement = connection.prepareStatement(sqlQuery);
-		} catch (SQLException exception) {
-			exception.printStackTrace(); // stub
-			new DAOException("error while creating PreparedStatement", exception);
-		}
-
-		return preparedStatement;
-	}
-
-	private ResultSet takeResultSet(PreparedStatement preparedStatement) {
-
-		ResultSet resultSet = null;
-		try {
-			resultSet = preparedStatement.executeQuery();
-		} catch (SQLException e) {
-			e.printStackTrace(); // stub
-			new DAOException("error while creating ResultSet", e);
-		}
-
-		return resultSet;
-	}
+	private static final Logger log = Logger.getLogger(SQLUserDao.class);
+	private SQLHelper sqlHelper = SQLHelper.getInstance();
 
 	private User createUser(ResultSet resultSet) throws DAOException {
 
 		User user = new User();
 
 		try {
-			user.setName(resultSet.getString("name"));
-			user.setSurname(resultSet.getString("surname"));
-			user.setCity(resultSet.getString("city"));
-			user.setCountry(resultSet.getString("country"));
-			user.setEmail(resultSet.getString("email"));
-			user.setLogin(resultSet.getString("login"));
-			user.setRating(resultSet.getInt("rating"));
-			user.setStatus(resultSet.getString("status"));
+
+			user.setId(resultSet.getInt(SQLHelper.ID));
+			user.setName(resultSet.getString(SQLHelper.NAME));
+			user.setSurname(resultSet.getString(SQLHelper.SURNAME));
+			user.setCity(resultSet.getString(SQLHelper.CITY));
+			user.setCountry(resultSet.getString(SQLHelper.COUNTRY));
+			user.setEmail(resultSet.getString(SQLHelper.EMAIL));
+			user.setLogin(resultSet.getString(SQLHelper.LOGIN));
+			user.setRating(resultSet.getInt(SQLHelper.RATING));
+			user.setStatus(resultSet.getString(SQLHelper.STATUS));
 
 		} catch (SQLException e) {
-			e.printStackTrace(); // stub
-			new DAOException("error while creating user", e);
+			log.log(Level.ERROR, "не получается создать пользователь");
+			throw new DAOException("error while creating user", e);
 		}
 
 		return user;
@@ -159,17 +46,22 @@ public class SQLUserDao implements UserDao {
 	public int takeUserId(String login) throws DAOException {
 
 		int id = 0;
-		Connection connection = takeConnection();
-		PreparedStatement preparedStatement = takePreparedStatement(connection, selectUserIdQuery());
-		try {
+
+		try (Connection connection = sqlHelper.takeConnection()) {
+
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection,
+					SQLHelper.SELECT_USER_ID_QUERY);
 			preparedStatement.setString(1, login);
-			ResultSet resultSet = takeResultSet(preparedStatement);
+			ResultSet resultSet = sqlHelper.takeResultSet(preparedStatement);
 
 			if (resultSet.next()) {
-				id = resultSet.getInt("id");
+				id = resultSet.getInt(SQLHelper.ID);
 			}
+
 		} catch (SQLException exception) {
-			new DAOException("error when retrieving the user id from the database", exception);
+
+			log.log(Level.ERROR, "не получается взять Id пользователя из БД");
+			throw new DAOException("error when retrieving the user id from the database", exception);
 		}
 
 		return id;
@@ -177,68 +69,94 @@ public class SQLUserDao implements UserDao {
 
 	private boolean isArgumentFree(String argument, String sqlQuery) throws DAOException {
 
-		try (Connection connection = takeConnection();) {
+		try (Connection connection = sqlHelper.takeConnection()) {
 
-			PreparedStatement preparedStatement = takePreparedStatement(connection, sqlQuery);
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection, sqlQuery);
 			preparedStatement.setString(1, argument);
-			ResultSet resultSet = takeResultSet(preparedStatement);
+			ResultSet resultSet = sqlHelper.takeResultSet(preparedStatement);
 
 			if (resultSet.next()) {
 				return false;
 			}
 
 		} catch (SQLException exception) {
-			new DAOException("error while checking for an argument in the database", exception);
+			log.log(Level.ERROR, "не получается проверить, занят ли логин или email в БД");
+			throw new DAOException("error while checking for an argument in the database", exception);
 		}
 
 		return true;
 	}
+	
+	private boolean executeQuery(String argument1, int argument2, String sqlQuery)
+			throws DAOException, SQLException {
 
-	private boolean executeQuery(String argument, String sqlQuery) throws DAOException {
+		Connection connection = sqlHelper.takeConnection();
 
-		try (Connection connection = takeConnection();) {
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection, sqlQuery);
+			preparedStatement.setString(1, argument1);
+			preparedStatement.setInt(2, argument2);
 
-			PreparedStatement preparedStatement = takePreparedStatement(connection, sqlQuery);
-			preparedStatement.setString(1, argument);
-			ResultSet resultSet = takeResultSet(preparedStatement);
-
-			if (resultSet.next()) {
-				return false;
-			}
+			preparedStatement.executeUpdate();
+			connection.commit();
 
 		} catch (SQLException exception) {
-			new DAOException("error while executing the operation with the database", exception);
+
+			connection.rollback();
+
+			log.log(Level.ERROR, "не получается выполнить запрос " + sqlQuery);
+			throw new DAOException("error while executing the operation with the database", exception);
+
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 		return true;
 	}
 
 	private boolean executeQuery(String argument1, String argument2, int argument3, String argument4, String sqlQuery)
-			throws DAOException {
+			throws DAOException, SQLException {
 
-		try (Connection connection = takeConnection();) {
+		Connection connection = sqlHelper.takeConnection();
 
-			PreparedStatement preparedStatement = takePreparedStatement(connection, sqlQuery);
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection, sqlQuery);
 			preparedStatement.setString(1, argument1);
 			preparedStatement.setString(2, argument2);
 			preparedStatement.setInt(3, argument3);
 			preparedStatement.setString(4, argument4);
 
 			preparedStatement.executeUpdate();
+			connection.commit();
 
 		} catch (SQLException exception) {
-			new DAOException("error while executing the operation with the database", exception);
+
+			connection.rollback();
+
+			log.log(Level.ERROR, "не получается выполнить запрос " + sqlQuery);
+			throw new DAOException("error while executing the operation with the database", exception);
+
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 		return true;
 	}
 
 	private boolean executeQuery(String argument1, String argument2, String argument3, String argument4,
-			String argument5, int argument6, String sqlQuery) throws DAOException {
+			String argument5, int argument6, String sqlQuery) throws DAOException, SQLException {
 
-		try (Connection connection = takeConnection();) {
-
-			PreparedStatement preparedStatement = takePreparedStatement(connection, sqlQuery);
+		Connection connection = sqlHelper.takeConnection();
+		
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection, sqlQuery);
 			preparedStatement.setString(1, argument1);
 			preparedStatement.setString(2, argument2);
 			preparedStatement.setString(3, argument3);
@@ -248,8 +166,19 @@ public class SQLUserDao implements UserDao {
 
 			preparedStatement.executeUpdate();
 
+			connection.commit();
+
 		} catch (SQLException exception) {
-			new DAOException("error while executing the operation with the database", exception);
+
+			connection.rollback();
+
+			log.log(Level.ERROR, "не получается выполнить запрос " + sqlQuery); 
+			throw new DAOException("error while executing the operation with the database", exception);
+
+		} finally {
+			if (connection != null) {
+				connection.close();
+			}
 		}
 
 		return true;
@@ -259,85 +188,99 @@ public class SQLUserDao implements UserDao {
 	public User logination(String login, String password) throws DAOException {
 
 		User user = null;
-		Connection connection = null;
-		PreparedStatement preparedStatement;
-		ResultSet resultSet;
 
-		try {
-			connection = takeConnection();
-			preparedStatement = takePreparedStatement(connection, selectUserQuery());
+		try (Connection connection = sqlHelper.takeConnection()) {
+
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection,
+					SQLHelper.SELECT_USER_QUERY);
 			preparedStatement.setString(1, login);
 			preparedStatement.setString(2, password);
-			resultSet = takeResultSet(preparedStatement);
+			ResultSet resultSet = sqlHelper.takeResultSet(preparedStatement);
 
 			if (resultSet.next()) {
+
 				user = createUser(resultSet);
 			}
 
-		} catch (SQLException e) {
-			e.printStackTrace(); // stub
-			new DAOException("error while retrieving users", e);
-		} finally {
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace(); // stub
-					new DAOException("error while closing connection", e);
-				}
-			}
-		}
+		} catch (SQLException exception) {
 
+			log.log(Level.ERROR, "ошибка во время логинации пользователя");
+			throw new DAOException("error while retrieving users", exception);
+		} 
+		
 		return user;
 	}
 
 	@Override
 	public String registration(User user) throws DAOException {
 
-		if (!isArgumentFree(user.getLogin(), selectUserLoginQuery())) {
+		String message = null;
+
+		if (!isArgumentFree(user.getLogin(), SQLHelper.SELECT_USER_LOGIN_QUERY)) {
 			return "Пользователь с таким логином уже зарегистрирован";
 		}
 
-		if (!isArgumentFree(user.getEmail(), selectUserEmailQuery())) {
+		if (!isArgumentFree(user.getEmail(), SQLHelper.SELECT_USER_EMAIL_QUERY)) {
 			return "Пользователь с таким email уже зарегистрирован";
 		}
 
-		if (executeQuery(user.getLogin(), user.getPassword(), user.getRating(), user.getStatus(), insertUserQuery())) {
+		try {
+
+			executeQuery(user.getLogin(), user.getPassword(), user.getRating(), user.getStatus(),
+					SQLHelper.INSERT_INTO_USERS_QUERY);
+
 			int id = takeUserId(user.getLogin());
 
-			if (executeQuery(user.getName(), user.getSurname(), user.getCity(), user.getCountry(), user.getEmail(), id,
-					insertUserDataQuery())) {
-				return "true";
-			} else {
-				executeQuery(user.getLogin(), deleteUserQuery());
-			}
-		}
+			executeQuery(user.getName(), user.getSurname(), user.getCity(), user.getCountry(), user.getEmail(), id,
+					SQLHelper.INSERT_INTO_USERS_DATA_QUERY);
 
-		return "По неизвестной причине пользователь не зарегистрирован";
+		} catch (SQLException exception) {
+			
+			log.log(Level.ERROR, "ошибка во время регистрации пользователя");
+			throw new DAOException("error while retrieving users", exception);
+		} 
+
+		return message;
 	}
 
 	@Override
 	public ArrayList<User> takeAllUsers() throws DAOException {
 
 		User user = null;
-		PreparedStatement preparedStatement;
-		ResultSet resultSet;
 		ArrayList<User> allUsers = new ArrayList<>();
 
-		try (Connection connection = takeConnection();) {
-			preparedStatement = takePreparedStatement(connection, selectAllUsersQuery());
-			resultSet = takeResultSet(preparedStatement);
+		try (Connection connection = sqlHelper.takeConnection()) {
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection,
+					SQLHelper.SELECT_ALL_USERS_QUERY);
+			ResultSet resultSet = sqlHelper.takeResultSet(preparedStatement);
 
 			while (resultSet.next()) {
 				user = createUser(resultSet);
 				allUsers.add(user);
 			}
 
-		} catch (SQLException e) {
-			new DAOException("error while retrieving users", e);
+		} catch (SQLException exception) {
+			log.log(Level.ERROR, "ошибка во время получения списка всех пользователей");
+			throw new DAOException("error while retrieving users", exception);
 		}
 
 		return allUsers;
+	}
+
+	@Override
+	public String сhangePassword(String newPassword, int id) throws DAOException {
+		
+		String message = null;
+		try {
+
+			executeQuery(newPassword, id, SQLHelper.UPDATE_USER_PASSWORD_QUERY);
+
+		} catch (SQLException exception) {
+
+			log.log(Level.ERROR, "ошибка во время изменения пароля пользователя");
+			throw new DAOException("error while retrieving users", exception);
+		} 
+		return message;
 	}
 
 }

@@ -1,38 +1,60 @@
 package by.lik.bean;
 
 public class Book {
-	private String author;
-	private String cardBook;
-	private String content;
+	private int id;
 	private String title;
-	
-	public Book () {
-		
+	private String author;
+	private String status;
+	private String genre;
+
+	public Book() {
+
 	}
-	
-	public String getAuthor() {
-		return author;
+
+	public int getId() {
+		return id;
 	}
-	public void setAuthor(String author) {
-		this.author = author;
+
+	public void setId(int id) {
+		this.id = id;
 	}
-	public String getCardBook() {
-		return cardBook;
-	}
-	public void setCardBook(String cardBook) {
-		this.cardBook = cardBook;
-	}
-	public String getContent() {
-		return content;
-	}
-	public void setContent(String content) {
-		this.content = content;
-	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getGenre() {
+		return genre;
+	}
+
+	public void setGenre(String genre) {
+		this.genre = genre;
+	}
+
+	@Override
+	public String toString() {
+		return "Book [id=" + id + ", title=" + title + ", author=" + author + ", status=" + status + ", genre=" + genre
+				+ "]";
 	}
 
 	@Override
@@ -40,8 +62,9 @@ public class Book {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((author == null) ? 0 : author.hashCode());
-		result = prime * result + ((cardBook == null) ? 0 : cardBook.hashCode());
-		result = prime * result + ((content == null) ? 0 : content.hashCode());
+		result = prime * result + ((genre == null) ? 0 : genre.hashCode());
+		result = prime * result + id;
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		result = prime * result + ((title == null) ? 0 : title.hashCode());
 		return result;
 	}
@@ -60,15 +83,17 @@ public class Book {
 				return false;
 		} else if (!author.equals(other.author))
 			return false;
-		if (cardBook == null) {
-			if (other.cardBook != null)
+		if (genre == null) {
+			if (other.genre != null)
 				return false;
-		} else if (!cardBook.equals(other.cardBook))
+		} else if (!genre.equals(other.genre))
 			return false;
-		if (content == null) {
-			if (other.content != null)
+		if (id != other.id)
+			return false;
+		if (status == null) {
+			if (other.status != null)
 				return false;
-		} else if (!content.equals(other.content))
+		} else if (!status.equals(other.status))
 			return false;
 		if (title == null) {
 			if (other.title != null)
@@ -77,6 +102,5 @@ public class Book {
 			return false;
 		return true;
 	}
-	
-	
+
 }

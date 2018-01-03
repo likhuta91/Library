@@ -11,6 +11,7 @@ import by.lik.service.ServiceFactory;
 import by.lik.service.UserService;
 import by.lik.service.exception.ServiceException;
 import by.lik.controller.command.Command;
+import by.lik.controller.helper.CommandHelper;
 
 public class LoginationUserCommand implements Command {
 
@@ -22,35 +23,31 @@ public class LoginationUserCommand implements Command {
 		ServiceFactory serviceFactory = ServiceFactory.getInstance();
 		UserService userService = serviceFactory.getUserService();
 
-		String login = request.getParameter("login");
-		String password = request.getParameter("password");
-		
+		String login = request.getParameter(CommandHelper.LOGIN);
+		String password = request.getParameter(CommandHelper.PASSWORD);
+
 		try {
 			User user = userService.logination(login, password);
 
 			if (user != null) {
 
-				String url = request.getRequestURL().toString() + "?";
-				request.getSession().setAttribute("url", url + "command=goToGsp&gspName=/WEB-INF/jsp/userStart.jsp");
+				String url = request.getRequestURL().toString() + CommandHelper.GO_TO_GSP_COMMAND+CommandHelper.USER_PATH;
+				request.getSession().setAttribute(CommandHelper.URL, url);
 
-				request.setAttribute("myUser", user);
-				request.getSession().setAttribute("myUser", user);
-				
-				if (user.getStatus().equals("admin")) {
-					goToPage = "/WEB-INF/jsp/adminStart.jsp";
-				} else {
-					goToPage = "/WEB-INF/jsp/userStart.jsp";
-				}
-				
+				request.getSession().setAttribute(CommandHelper.MY_USER, user);
+
+				goToPage = CommandHelper.USER_PATH;
+
 			} else {
-				request.setAttribute("message", "Неверно введен логин или пароль");
+				
+				request.getSession().setAttribute(CommandHelper.MESSAGE, "Неверно введен логин или пароль");
 				goToPage = "/WEB-INF/jsp/logination.jsp";
 			}
 		} catch (ServiceException e) {
-			e.printStackTrace();
-			goToPage = "error.jsp";
+			
+			request.getSession().setAttribute(CommandHelper.MESSAGE, "Произошла непредвиденная ошибка, повторите ввод регистрационных данных");
+			goToPage = CommandHelper.LOGINATION_PATH;
 		}
-		//request.setAttribute("gspName", url);
 
 		dispatcher = request.getRequestDispatcher(goToPage);
 		dispatcher.forward(request, response);

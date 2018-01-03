@@ -8,4 +8,5 @@ public interface UserDao {
 	User logination(String login, String password) throws DAOException;
 	String registration(User user) throws DAOException;
 	ArrayList<User> takeAllUsers()throws DAOException;
+	String сhangePassword (String newPassword, int id)throws DAOException;
 }

@@ -14,19 +14,20 @@ public class AddBookCommand implements Command {
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) {
 		Book book = new Book();
+		String defaultBookStatus = "1";
 
 		ServiceFactory serviceFactory = ServiceFactory.getInstance();
 		BookService bookService = serviceFactory.getBookService();
 
 		String title = request.getParameter("title");
-		String cardBook = request.getParameter("cardBook");
-		String content = request.getParameter("content");
 		String author = request.getParameter("author");
+		String genre = request.getParameter("genre");
 
 		book.setTitle(title);
-		book.setCardBook(cardBook);
-		book.setContent(content);
 		book.setAuthor(author);
+		book.setGenre(genre);
+		book.setStatus(defaultBookStatus);
+		
 		boolean bookIsExist = false;
 
 		try {

@@ -55,15 +55,17 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ArrayList<Book> showAllBooks() throws ServiceException {
+	public ArrayList<Book> takeAllBooks(int pageNumber) throws ServiceException {
+		
 		ArrayList<Book> allBooks = null;
+		
 		try {
-			allBooks = sqlBookDao.showAllBooks();
+			allBooks = sqlBookDao.takeAllBooks(pageNumber);
 			
 		} catch (DAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new ServiceException("smth wrong", e);
 		}
+		
 		return allBooks;
 	}
 

@@ -8,18 +8,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import by.lik.controller.command.Command;
+import by.lik.controller.helper.CommandHelper;
 
 public class GoToGsp implements Command{
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		CommandHelper commandHelper = new CommandHelper();
+		CommandHelper commandHelper = CommandHelper.getInstance();
+			
 		String url = commandHelper.takeURL(request);
 		
-		request.getSession().setAttribute("url", url);
+		request.getSession().setAttribute(CommandHelper.URL, url);
 		
-		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getParameter("gspName"));
+		RequestDispatcher dispatcher = request.getRequestDispatcher(request.getParameter(CommandHelper.GSP_NAME));
 		dispatcher.forward(request, response);
 	
 	}

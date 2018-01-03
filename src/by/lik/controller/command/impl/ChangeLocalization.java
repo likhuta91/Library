@@ -6,15 +6,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import by.lik.controller.command.Command;
+import by.lik.controller.helper.CommandHelper;
 
 public class ChangeLocalization implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//System.out.println(request.getSession().getAttribute("url"));
-		request.getSession(true).setAttribute("local", request.getParameter("local"));
 
-		String url = request.getSession().getAttribute("url").toString();
+		request.getSession(true).setAttribute(CommandHelper.LOCAL, request.getParameter(CommandHelper.LOCAL));
+
+		String url = request.getSession().getAttribute(CommandHelper.URL).toString();
 
 		response.sendRedirect(url);
 

@@ -9,20 +9,16 @@ public class DAOFactory {
 	private final UserDao sqlUserDao = new SQLUserDao();
 	
 	public BookDao getBookDao() {
+		
 		return sqlBookDao;
 	}
 	public UserDao getUserDao() {
 		
 		return sqlUserDao;
 	}
+	
 	public static DAOFactory getDaoFactory() {
-		/*try {
-			Class.forName("org.gjt.mm.mysql.Driver");
-
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
-		}*/
+		
 		return daoFactory;
 	}
 	
