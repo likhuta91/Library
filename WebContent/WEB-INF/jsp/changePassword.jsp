@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8" import="by.lik.bean.User"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -10,18 +10,21 @@
 
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
-<fmt:message bundle="${loc}" key="local.message.start" var="message" />
+<fmt:message bundle="${loc}" key="local.message.welcome" var="message" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.ru"
 	var="ru_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.en"
 	var="en_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.reg"
-	var="reg_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.log"
-	var="log_button" />
+<fmt:message bundle="${loc}" key="local.locbutton.name.enter"
+	var="enter_button" />
+
+<fmt:message bundle="${loc}" key="local.message.newPassword"
+	var="newPassword" />
+
 </head>
 
 <body>
+
 	<table>
 		<tr>
 			<td>
@@ -39,9 +42,10 @@
 						type="submit" value="${en_button}" />
 				</form>
 			</td>
+
 		</tr>
 	</table>
-	
+
 	<br />
 	<br />
 	<br />
@@ -51,25 +55,17 @@
 	<br />
 
 	<center>
-		<c:if test="${empty sessionScope.url}">
-			<%
-				request.getSession().setAttribute("url", request.getRequestURL().toString());
-			%>
-			<c:out value="${message}!" />
-		</c:if>
-
-		<form action="FrontController" method="get">
-			<input type="hidden" name="command" value="goToGsp" /> <input
-				type="hidden" name="gspName" value="/WEB-INF/jsp/registration.jsp" />
-			<input type="submit" value="${reg_button}" />
+		<c:out value="${newPassword}" />
+		: <br />
+		<form action="FrontController" method="post">
+			<input type="hidden" name="command" value="changeUserPassword" /> <input
+				required type="text" name="password" value="" /> <input
+				type="submit" value="${enter_button}" />
 		</form>
-
-		<form action="FrontController" method="get">
-			<input type="hidden" name="command" value="goToGsp" /> <input
-				type="hidden" name="gspName" value="/WEB-INF/jsp/logination.jsp" />
-			<input type="submit" value="${log_button}" />
-		</form>
+		<c:out value="${sessionScope.message}" />
+		<%
+			request.getSession().removeAttribute("message");
+		%>
 	</center>
-
 </body>
 </html>

@@ -43,8 +43,18 @@
 	</table>
 	
 	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
 	
-	<c:out value="${requestScope.message}" />
+	<center>
+	<c:out value="${sessionScope.message}" />
+	<%
+	request.getSession().removeAttribute("message");
+	%>
 
 	<form action="FrontController" method="post">
 		<input type="hidden" name="command" value="logination" />
@@ -56,6 +66,6 @@
 		:<br /> <input type="password" name="password" value="" /><br /> <input
 			type="submit" value="${reg_button}" /><br />
 	</form>
-
+</center>
 </body>
 </html>

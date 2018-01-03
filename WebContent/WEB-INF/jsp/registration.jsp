@@ -10,7 +10,8 @@
 
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
-<fmt:message bundle="${loc}" key="local.message.registration" var="registration" />
+<fmt:message bundle="${loc}" key="local.message.registration"
+	var="registration" />
 <fmt:message bundle="${loc}" key="local.message.login" var="login" />
 <fmt:message bundle="${loc}" key="local.message.password" var="password" />
 <fmt:message bundle="${loc}" key="local.message.name" var="name" />
@@ -49,32 +50,42 @@
 	</table>
 
 	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
 
-	<c:out value="${regMessage}" />
-	<c:remove var="regMessage" />
+	<center>
+		<c:out value="${sessionScope.message}" />
+		<%
+			request.getSession().removeAttribute("message");
+		%>
 
-	<form action="FrontController" method="post">
-		<input type="hidden" name="command" value="registration" />
+		<form action="FrontController" method="post">
+			<input type="hidden" name="command" value="registration" />
 
-		<c:out value="${login}" />
-		: <br /> <input required type="text" name="login" value="" />*<br />
+			<c:out value="${login}" />
+			: <br /> <input required type="text" name="login" value="" />*<br />
 
-		<c:out value="${password}" />
-		: <br /> <input required type="password" name="password" value="" />*<br />
+			<c:out value="${password}" />
+			: <br /> <input required type="password" name="password" value="" />*<br />
 
-		<c:out value="${name}" />
-		: <br /> <input required type="text" name="name" value="" />*<br />
-		<c:out value="${surname}" />
-		: <br /> <input required type="text" name="surname" value="" />*<br />
-		<c:out value="${country}" />
-		: <br /> <input type="text" name="country" value="" /><br />
-		<c:out value="${city}" />
-		: <br /> <input type="text" name="city" value="" /><br />
-		<c:out value="${email}" />
-		: <br /> <input required type="text" name="email" value="" />*<br />
-		<c:out value="* - ${registration}" />
-		<br /> <input type="submit" value="${reg_button}" />
-	</form>
+			<c:out value="${name}" />
+			: <br /> <input required type="text" name="name" value="" />*<br />
+			<c:out value="${surname}" />
+			: <br /> <input required type="text" name="surname" value="" />*<br />
+			<c:out value="${country}" />
+			: <br /> <input type="text" name="country" value="" /><br />
+			<c:out value="${city}" />
+			: <br /> <input type="text" name="city" value="" /><br />
+			<c:out value="${email}" />
+			: <br /> <input required type="text" name="email" value="" />*<br />
+			<c:out value="* - ${registration}" />
+			<br /> <input type="submit" value="${reg_button}" />
+		</form>
+	</center>
 
 </body>
 </html>
