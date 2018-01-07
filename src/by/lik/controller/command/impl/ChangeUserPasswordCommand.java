@@ -17,43 +17,39 @@ public class ChangeUserPasswordCommand implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		CommandHelper commandHelper = CommandHelper.getInstance();
+		commandHelper.logOutIfUserNotAuthorized(request, response);
+
 		ServiceFactory serviceFactory = ServiceFactory.getInstance();
 		UserService userService = serviceFactory.getUserService();
 
 		String message;
 		String goToPage = CommandHelper.USER_PATH;
 
-		if (request.getSession().getAttribute(CommandHelper.MY_USER) == null) {
+		String password = request.getParameter(CommandHelper.PASSWORD);
+		User user = (User) request.getSession().getAttribute(CommandHelper.MY_USER);
+		int id = user.getId();
 
-			goToPage = CommandHelper.INDEX_PATH;
+		try {
+			message = userService.сhangePassword(password, id);
 
-		} else {
+			if (message == null) {
 
-			String password = request.getParameter(CommandHelper.PASSWORD);
-			User user = (User) request.getSession().getAttribute(CommandHelper.MY_USER);
-			int id = user.getId();
+				request.getSession().setAttribute(CommandHelper.MESSAGE, "Пароль успешно изменен");
 
-			try {
-				message = userService.сhangePassword(password, id);
+			} else {
 
-				if (message==null) {
+				request.getSession().setAttribute(CommandHelper.MESSAGE, message);
 
-					request.getSession().setAttribute(CommandHelper.MESSAGE, "Пароль успешно изменен");
-
-				} else {
-					
-					request.getSession().setAttribute(CommandHelper.MESSAGE, message);
-					
-					goToPage = CommandHelper.CHANGE_PASSWORD_PATH;
-				}
-
-			} catch (ServiceException e) {
-
-				request.getSession().setAttribute(CommandHelper.MESSAGE,
-						"Произошла непредвиденная ошибка, повторите ввод нового пароля");
-			
 				goToPage = CommandHelper.CHANGE_PASSWORD_PATH;
 			}
+
+		} catch (ServiceException e) {
+
+			request.getSession().setAttribute(CommandHelper.MESSAGE,
+					"Произошла непредвиденная ошибка, повторите ввод нового пароля");
+
+			goToPage = CommandHelper.CHANGE_PASSWORD_PATH;
 		}
 
 		String url = request.getRequestURL().toString() + CommandHelper.GO_TO_GSP_COMMAND + goToPage;

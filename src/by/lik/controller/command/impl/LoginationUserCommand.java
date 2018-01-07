@@ -41,7 +41,7 @@ public class LoginationUserCommand implements Command {
 			} else {
 				
 				request.getSession().setAttribute(CommandHelper.MESSAGE, "Неверно введен логин или пароль");
-				goToPage = "/WEB-INF/jsp/logination.jsp";
+				goToPage = CommandHelper.LOGINATION_PATH;
 			}
 		} catch (ServiceException e) {
 			

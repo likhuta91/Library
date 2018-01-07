@@ -31,7 +31,7 @@ public class SQLBookDao implements BookDao {
 			book.setGenre(resultSet.getString(SQLHelper.GENRE));
 
 		} catch (SQLException e) {
-			log.log(Level.ERROR, "не получается создать книгу");
+			log.log(Level.ERROR, "Не получается создать книгу");
 			throw new DAOException("error while creating book", e);
 		}
 
@@ -39,7 +39,7 @@ public class SQLBookDao implements BookDao {
 	}
 
 	@Override
-	public ArrayList<Book> takeAllBooks(int pageNumber) throws DAOException {
+	public ArrayList<Book> takeAllBooks() throws DAOException {
 
 		ArrayList<Book> allBooks = new ArrayList<>();
 		Book book;
@@ -58,9 +58,9 @@ public class SQLBookDao implements BookDao {
 			}
 
 		} catch (SQLException e) {
-			log.log(Level.ERROR, "ошибка во время получения списка всех книг");
+			log.log(Level.ERROR, "Ошибка во время получения списка всех книг");
 			throw new DAOException("error while retrieving users", e);
-		}	
+		}
 
 		return allBooks;
 	}
@@ -72,17 +72,66 @@ public class SQLBookDao implements BookDao {
 	}
 
 	@Override
-	public ArrayList<Book> searchByAuthor(String author) throws DAOException {
-		ArrayList<Book> bookList = null;
+	public ArrayList<Book> searchBook(String value) throws DAOException {
+		ArrayList<Book> allBooks = new ArrayList<>();
 
-		return bookList;
+		value = "%" + value + "%";
+
+		Book book;
+
+		try (Connection connection = sqlHelper.takeConnection()) {
+
+			PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection,
+					SQLHelper.SELECT_BOOKS_BY_VALUE_QUERY);
+			preparedStatement.setString(1, value);
+			preparedStatement.setString(2, value);
+
+			ResultSet resultSet = sqlHelper.takeResultSet(preparedStatement);
+
+			while (resultSet.next()) {
+				book = createBook(resultSet);
+				allBooks.add(book);
+			}
+
+			if (allBooks.size() == 0) {
+				allBooks = null;
+			}
+
+		} catch (SQLException e) {
+			log.log(Level.ERROR, "Ошибка во время получения списка всех книг");
+			throw new DAOException("error while retrieving users", e);
+		}
+
+		return allBooks;
 	}
 
 	@Override
-	public ArrayList<Book> searchByTitle(String title) throws DAOException {
-		ArrayList<Book> bookList = null;
+	public ArrayList<Book> takeBooksById(String[] stringBooksId) throws DAOException {
+		ArrayList<Book> allBooks = new ArrayList<>();
+		Book book;
+		
+		for (int i = 0; i < stringBooksId.length; i++) {
+			try (Connection connection = sqlHelper.takeConnection()) {
 
-		return bookList;
+				PreparedStatement preparedStatement = sqlHelper.takePreparedStatement(connection,
+						SQLHelper.SELECT_BOOKS_BY_ID_QUERY);
+
+				preparedStatement.setInt(1, Integer.parseInt(stringBooksId[i]));
+				ResultSet resultSet = sqlHelper.takeResultSet(preparedStatement);
+
+				if (resultSet.next()) {
+
+					book = createBook(resultSet);
+					allBooks.add(book);
+				}
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				log.log(Level.ERROR, "Ошибка во время получения списка всех книг");
+				throw new DAOException("error while retrieving users", e);
+			}
+		}
+		return allBooks;
 	}
 
 }

@@ -19,10 +19,11 @@ public class FrontController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+		response.setCharacterEncoding ("UTF-8");
 		String commandName = request.getParameter(CommandHelper.COMMAND);
 		
 		Command commandObject = provider.getCommand(commandName);
+//System.out.println(request.getSession().getAttribute("url")+ " in doGet");
 		
 		commandObject.execute(request, response);
 		
@@ -30,12 +31,14 @@ public class FrontController extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+response.setCharacterEncoding ("UTF-8");
 		String commandName = request.getParameter(CommandHelper.COMMAND);
 
 		Command commandObject = provider.getCommand(commandName);
-
+//System.out.println(request.getSession().getAttribute("url")+ " in doPost");
+		
 		commandObject.execute(request, response);
+		
 		
 	}
 

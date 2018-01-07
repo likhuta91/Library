@@ -11,26 +11,27 @@ import javax.servlet.ServletResponse;
 public class CharsetFilter implements Filter {
 	private String encoding;
 
-    public CharsetFilter() {
+	public CharsetFilter() {
 
-    }
+	}
 
 	public void destroy() {
 
 	}
 
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+			throws IOException, ServletException {
 
 		request.setCharacterEncoding(encoding);
 		response.setCharacterEncoding(encoding);
-		
+
 		chain.doFilter(request, response);
 	}
 
 	public void init(FilterConfig fConfig) throws ServletException {
-		
+
 		encoding = fConfig.getInitParameter("characterEncoding");
-		
+
 	}
 
 }

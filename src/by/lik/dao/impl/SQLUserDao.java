@@ -36,7 +36,7 @@ public class SQLUserDao implements UserDao {
 			user.setStatus(resultSet.getString(SQLHelper.STATUS));
 
 		} catch (SQLException e) {
-			log.log(Level.ERROR, "не получается создать пользователь");
+			log.log(Level.ERROR, "не получается создать пользователя");
 			throw new DAOException("error while creating user", e);
 		}
 

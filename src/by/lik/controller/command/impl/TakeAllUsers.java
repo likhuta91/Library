@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import by.lik.bean.User;
 import by.lik.controller.command.Command;
 import by.lik.controller.helper.CommandHelper;
+import by.lik.controller.paginator.Paginator;
 import by.lik.service.ServiceFactory;
 import by.lik.service.UserService;
 import by.lik.service.exception.ServiceException;
@@ -19,39 +20,49 @@ public class TakeAllUsers implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		CommandHelper commandHelper = CommandHelper.getInstance();
+
+		commandHelper.logOutIfUserNotAuthorized(request, response);
+
+		ServiceFactory serviceFactory = ServiceFactory.getInstance();
+		UserService userService = serviceFactory.getUserService();
+		
 		String goToPage = CommandHelper.USER_PATH;
-		RequestDispatcher dispatcher;
+		
+		ArrayList<User> allUsers = null;
+		ArrayList<User> listOfReturnedUsers = null;
 
-		if (request.getSession().getAttribute(CommandHelper.MY_USER) == null) {
+		int currentPageNumber = commandHelper.takeCurrentPageNumber(request);
+		int numberOfAllPages;
+		
+		
 
-			goToPage = CommandHelper.INDEX_PATH;
+		try {
+			allUsers = userService.takeAllUsers();
 
-		} else {
+			numberOfAllPages = commandHelper.takeNumberOfAllPages(allUsers.size());
 
-			ServiceFactory serviceFactory = ServiceFactory.getInstance();
-			UserService userService = serviceFactory.getUserService();
+			Paginator<User> paginator = new Paginator<>();
+			
+			listOfReturnedUsers = paginator.returnSelectedListOfValues(allUsers, currentPageNumber,
+					CommandHelper.NUMBER_OF_ITEMS_DISPLAYED_ON_THE_PAGE);
 
-			ArrayList<User> userList = null;
+			request.setAttribute(CommandHelper.ALL_USERS, listOfReturnedUsers);
+			
+			commandHelper.putAttributeInSession(request, currentPageNumber, numberOfAllPages, CommandHelper.ALL_USERS);
 
-			try {
-				userList = userService.takeAllUsers();
-				request.setAttribute(CommandHelper.ALL_USERS, userList);
-				
-			} catch (ServiceException e) {
-				
-				request.getSession().setAttribute(CommandHelper.MESSAGE, "Произошла ошибка при загрузке списка пользователей");
-			}
+		} catch (ServiceException e) {
 
-			CommandHelper commandHelper = new CommandHelper();
-			String url = commandHelper.takeURL(request);
-
-			request.getSession().setAttribute(CommandHelper.URL, url);
+			request.getSession().setAttribute(CommandHelper.MESSAGE,
+					"Произошла ошибка при загрузке списка пользователей");
 		}
 		
-		dispatcher = request.getRequestDispatcher(goToPage);
+		String url = commandHelper.takeURL(request);
+		request.getSession().setAttribute(CommandHelper.URL, url);
+		
+		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
 		dispatcher.forward(request, response);
 
 	}
 
 }
-

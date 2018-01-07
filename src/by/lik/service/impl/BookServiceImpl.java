@@ -14,7 +14,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public boolean add(Book book) throws ServiceException {
-				
+
 		boolean isExsist = false;
 
 		try {
@@ -22,17 +22,19 @@ public class BookServiceImpl implements BookService {
 		} catch (DAOException e) {
 			throw new ServiceException("smth wrong", e);
 		}
-		
+
 		return isExsist;
 	}
 
 	@Override
-	public ArrayList<Book> searchByAuthor(String author) throws ServiceException {
-	
+	public ArrayList<Book> searchBook(String value) throws ServiceException {
+
 		ArrayList<Book> bookList = null;
 
+		value = value.replaceAll("[\\s]{2,}", " ");
 		try {
-			bookList = sqlBookDao.searchByAuthor(author);
+			bookList = sqlBookDao.searchBook(value);
+
 		} catch (DAOException e) {
 			throw new ServiceException("smth wrong", e);
 		}
@@ -41,31 +43,31 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public ArrayList<Book> searchByTitle(String title) throws ServiceException {
-		
-		ArrayList<Book> bookList = null;
+	public ArrayList<Book> takeAllBooks() throws ServiceException {
 
-		try {
-			bookList = sqlBookDao.searchByTitle(title);
-		} catch (DAOException e) {
-			throw new ServiceException("smth wrong", e);
-		}
-
-		return bookList;
-	}
-
-	@Override
-	public ArrayList<Book> takeAllBooks(int pageNumber) throws ServiceException {
-		
 		ArrayList<Book> allBooks = null;
-		
+
 		try {
-			allBooks = sqlBookDao.takeAllBooks(pageNumber);
-			
+			allBooks = sqlBookDao.takeAllBooks();
+
 		} catch (DAOException e) {
 			throw new ServiceException("smth wrong", e);
 		}
-		
+
+		return allBooks;
+	}
+
+	@Override
+	public ArrayList<Book> takeBooksById(String[] booksId) throws ServiceException {
+		ArrayList<Book> allBooks = null;
+
+		try {
+			allBooks = sqlBookDao.takeBooksById(booksId);
+
+		} catch (DAOException e) {
+			throw new ServiceException("smth wrong", e);
+		}
+
 		return allBooks;
 	}
 
