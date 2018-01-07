@@ -41,7 +41,7 @@
 			</td>
 		</tr>
 	</table>
-	
+
 	<br />
 	<br />
 	<br />
@@ -56,8 +56,14 @@
 				request.getSession().setAttribute("url", request.getRequestURL().toString());
 			%>
 			<c:out value="${message}!" />
+			
 		</c:if>
-
+		
+		<c:out value="${sessionScope.message}" />
+	<%
+		request.getSession().removeAttribute("message");
+	%>
+		
 		<form action="FrontController" method="get">
 			<input type="hidden" name="command" value="goToGsp" /> <input
 				type="hidden" name="gspName" value="/WEB-INF/jsp/registration.jsp" />

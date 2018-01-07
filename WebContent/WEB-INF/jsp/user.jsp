@@ -25,13 +25,18 @@
 	var="enter_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.changePassword"
 	var="changePassword_button" />
-
 <fmt:message bundle="${loc}" key="local.locbutton.name.next"
 	var="next_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.previous"
 	var="previous_button" />
-
-
+<fmt:message bundle="${loc}" key="local.locbutton.name.search"
+	var="search_button" />
+<fmt:message bundle="${loc}" key="local.locbutton.name.basket"
+	var="basket_button" />
+<fmt:message bundle="${loc}" key="local.locbutton.name.addToBasket"
+	var="addToBasket_button" />
+<fmt:message bundle="${loc}" key="local.locbutton.name.myOrders"
+	var="myOrders_button" />
 
 <fmt:message bundle="${loc}" key="local.message.id" var="id" />
 <fmt:message bundle="${loc}" key="local.message.login" var="login" />
@@ -70,6 +75,19 @@
 		</tr>
 	</table>
 
+
+	<form action="FrontController" method="get">
+		<input type="hidden" name="command" value="goToGsp" /> <input
+			type="hidden" name="gspName" value="/WEB-INF/jsp/basket.jsp" /> <input
+			type="submit" value="${basket_button}" />
+	</form>
+	<form action="FrontController" method="get">
+		<input type="hidden" name="command" value="takeUserOrders" /><input
+			type="submit" value="${myOrders_button}" />
+	</form>
+
+
+
 	<br />
 
 	<c:out value="${message}" />
@@ -96,7 +114,7 @@
 
 		</select> <input type="submit" value="${enter_button}" /><br />
 	</form>
-	
+
 	<c:out value="${sessionScope.message}" />
 	<%
 		request.getSession().removeAttribute("message");
@@ -111,6 +129,13 @@
 	<br />
 
 	<center>
+
+		<form action="FrontController" method="post">
+			<input type="hidden" name="command" value="searchBook" /> <input
+				type="text" name="searchBook" value="" /> <input type="submit"
+				value="${search_button}" />
+		</form>
+
 		<c:choose>
 			<c:when test="${sessionScope.myUser.status=='admin'}">
 				<form action="FrontController" method="get">
@@ -138,35 +163,41 @@
 		</c:choose>
 	</center>
 
-	<c:if test="${not empty allBooks}">
+	<c:if test="${not empty requestScope.allBooks}">
+		<form action="FrontController" method="get">
+			<table border="0,5" cellspacing="0" cellpadding="5">
 
-		<table border="1" cellspacing="0" cellpadding="2">
-
-			<tr>
-				<td><c:out value="${id}:"></c:out></td>
-				<td><c:out value="${title}:"></c:out></td>
-				<td><c:out value="${author}:"></c:out></td>
-				<td><c:out value="${genre}:"></c:out></td>
-				<td><c:out value="${statuss}:"></c:out></td>
-			</tr>
-
-			<c:forEach items="${allBooks}" var="book">
 				<tr>
-					<td><c:out value="${book.id}" /></td>
-					<td><c:out value="${book.title}" /></td>
-					<td><c:out value="${book.author}" /></td>
-					<td><c:out value="${book.genre}" /></td>
-					<td><c:out value="${book.status}" /></td>
+					<td><c:out value="${id}:"></c:out></td>
+					<td><c:out value="${title}:"></c:out></td>
+					<td><c:out value="${author}:"></c:out></td>
+					<td><c:out value="${genre}:"></c:out></td>
+					<td><c:out value="${statuss}:"></c:out></td>
+					<td><c:out value=""></c:out></td>
 				</tr>
-			</c:forEach>
 
-		</table>
+				<c:forEach items="${requestScope.allBooks}" var="book">
+					<tr>
+						<td><c:out value="${book.id}" /></td>
+						<td><c:out value="${book.title}" /></td>
+						<td><c:out value="${book.author}" /></td>
+						<td><c:out value="${book.genre}" /></td>
+						<td><c:out value="${book.status}" /></td>
+						<c:if test="${book.status=='free'}">
+							<td><input type="checkbox" name="id" value="${book.id}"></td>
+						</c:if>
+					</tr>
+				</c:forEach>
 
+			</table>
+			<input type="hidden" name="command" value="addBookToBasket" /> <input
+				type="submit" value="${addToBasket_button}" />
+		</form>
 	</c:if>
 
-	<c:if test="${not empty allUsers}">
+	<c:if test="${not empty requestScope.allUsers}">
 
-		<table border="1" cellspacing="0" cellpadding="2">
+		<table border="0" cellspacing="0" cellpadding="5">
 
 			<tr>
 				<td><c:out value="${id}:"></c:out></td>
@@ -179,7 +210,7 @@
 				<td><c:out value="${statuss}:"></c:out></td>
 			</tr>
 
-			<c:forEach items="${allUsers}" var="user">
+			<c:forEach items="${requestScope.allUsers}" var="user">
 				<tr>
 					<td><c:out value="${user.id}" /></td>
 					<td><c:out value="${user.login}" /></td>
@@ -213,7 +244,8 @@
 				</c:if>
 				<td><c:out value="    ${sessionScope.currentPageNumber}    "></c:out></td>
 
-				<c:if test="${sessionScope.currentPageNumber<sessionScope.numberOfAllPages}">
+				<c:if
+					test="${sessionScope.currentPageNumber<sessionScope.numberOfAllPages}">
 					<td>
 						<form action="FrontController" method="get">
 							<input type="hidden" name="command"
@@ -230,11 +262,9 @@
 
 		<%
 			request.getSession().removeAttribute("command");
+				request.getSession().removeAttribute("currentPageNumber");
+				request.getSession().removeAttribute("numberOfAllPages");
 		%>
-		<%
-			request.getSession().removeAttribute("currentPageNumber");
-		%>
-
 
 	</c:if>
 </body>

@@ -4,6 +4,19 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
 	<display-name>Library</display-name>
+	<filter>
+		<display-name>CharsetFilter</display-name>
+		<filter-name>CharsetFilter</filter-name>
+		<filter-class>by.lik.filter.CharsetFilter</filter-class>
+		<init-param>
+			<param-name>characterEncoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CharsetFilter</filter-name>
+		<url-pattern>/FrontController</url-pattern>
+	</filter-mapping>
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>
 		<welcome-file>index.htm</welcome-file>
@@ -22,19 +35,6 @@
 		<servlet-name>FrontController</servlet-name>
 		<url-pattern>/FrontController</url-pattern>
 	</servlet-mapping>
-	<filter>
-		<display-name>CharsetFilter</display-name>
-		<filter-name>CharsetFilter</filter-name>
-		<filter-class>by.lik.filter.CharsetFilter</filter-class>
-		<init-param>
-			<param-name>characterEncoding</param-name>
-			<param-value>UTF-8</param-value>
-		</init-param>
-	</filter>
-	<filter-mapping>
-		<filter-name>CharsetFilter</filter-name>
-		<url-pattern>/FrontController</url-pattern>
-	</filter-mapping>
 	<resource-ref>
 		<res-ref-name>jdbc/appname</res-ref-name>
 		<res-type>javax.sql.DataSource</res-type>
