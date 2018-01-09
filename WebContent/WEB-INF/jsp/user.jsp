@@ -130,7 +130,7 @@
 
 	<center>
 
-		<form action="FrontController" method="post">
+		<form action="FrontController" method="get">
 			<input type="hidden" name="command" value="searchBook" /> <input
 				type="text" name="searchBook" value="" /> <input type="submit"
 				value="${search_button}" />
@@ -196,76 +196,81 @@
 	</c:if>
 
 	<c:if test="${not empty requestScope.allUsers}">
+		<form action="FrontController" method="get">
+			<table border="0" cellspacing="0" cellpadding="5">
 
-		<table border="0" cellspacing="0" cellpadding="5">
-
-			<tr>
-				<td><c:out value="${id}:"></c:out></td>
-				<td><c:out value="${login}:"></c:out></td>
-				<td><c:out value="${name}:"></c:out></td>
-				<td><c:out value="${surname}:"></c:out></td>
-				<td><c:out value="${city}:"></c:out></td>
-				<td><c:out value="${country}:"></c:out></td>
-				<td><c:out value="${email}:"></c:out></td>
-				<td><c:out value="${statuss}:"></c:out></td>
-			</tr>
-
-			<c:forEach items="${requestScope.allUsers}" var="user">
 				<tr>
-					<td><c:out value="${user.id}" /></td>
-					<td><c:out value="${user.login}" /></td>
-					<td><c:out value="${user.name}" /></td>
-					<td><c:out value="${user.surname}" /></td>
-					<td><c:out value="${user.city}" /></td>
-					<td><c:out value="${user.country}" /></td>
-					<td><c:out value="${user.email}" /></td>
-					<td><c:out value="${user.status}" /></td>
+					<td><c:out value="${id}:"></c:out></td>
+					<td><c:out value="${login}:"></c:out></td>
+					<td><c:out value="${name}:"></c:out></td>
+					<td><c:out value="${surname}:"></c:out></td>
+					<td><c:out value="${city}:"></c:out></td>
+					<td><c:out value="${country}:"></c:out></td>
+					<td><c:out value="${email}:"></c:out></td>
+					<td><c:out value="${statuss}:"></c:out></td>
+					<td><c:out value=""></c:out></td>
 				</tr>
-			</c:forEach>
-		</table>
 
+				<c:forEach items="${requestScope.allUsers}" var="user">
+					<tr>
+						<td><c:out value="${user.id}" /></td>
+						<td><c:out value="${user.login}" /></td>
+						<td><c:out value="${user.name}" /></td>
+						<td><c:out value="${user.surname}" /></td>
+						<td><c:out value="${user.city}" /></td>
+						<td><c:out value="${user.country}" /></td>
+						<td><c:out value="${user.email}" /></td>
+						<td><c:out value="${user.status}" /></td>
+						<td><input type="checkbox" name="id" value="${book.id}"></td>
+					</tr>
+				</c:forEach>
+			</table>
+			<input type="hidden" name="command" value="deleteUserAccount" /> <input
+				type="submit" value="${addToBasket_button}" />
+		</form>
 	</c:if>
 
+	<center>
+		<c:if test="${not empty sessionScope.currentPageNumber}">
+			<table>
+				<tr>
 
-	<c:if test="${not empty sessionScope.currentPageNumber}">
-		<table>
-			<tr>
+					<c:if test="${sessionScope.currentPageNumber>1}">
+						<td>
+							<form action="FrontController" method="get">
+								<input type="hidden" name="command"
+									value="${sessionScope.command}" /> <input type="hidden"
+									name="currentPageNumber"
+									value="${sessionScope.currentPageNumber-1}" /> <input
+									type="submit" value="${previous_button}" />
+							</form>
+						</td>
+					</c:if>
+					<td><c:out value="    ${sessionScope.currentPageNumber}    "></c:out></td>
 
-				<c:if test="${sessionScope.currentPageNumber>1}">
-					<td>
-						<form action="FrontController" method="get">
-							<input type="hidden" name="command"
-								value="${sessionScope.command}" /> <input type="hidden"
-								name="currentPageNumber"
-								value="${sessionScope.currentPageNumber-1}" /> <input
-								type="submit" value="${previous_button}" />
-						</form>
-					</td>
-				</c:if>
-				<td><c:out value="    ${sessionScope.currentPageNumber}    "></c:out></td>
+					<c:if
+						test="${sessionScope.currentPageNumber<sessionScope.numberOfAllPages}">
+						<td>
+							<form action="FrontController" method="get">
+								<input type="hidden" name="command"
+									value="${sessionScope.command}" /> <input type="hidden"
+									name="currentPageNumber"
+									value="${sessionScope.currentPageNumber+1}" /> <input
+									type="submit" value="${next_button}" />
+							</form>
+						</td>
+					</c:if>
 
-				<c:if
-					test="${sessionScope.currentPageNumber<sessionScope.numberOfAllPages}">
-					<td>
-						<form action="FrontController" method="get">
-							<input type="hidden" name="command"
-								value="${sessionScope.command}" /> <input type="hidden"
-								name="currentPageNumber"
-								value="${sessionScope.currentPageNumber+1}" /> <input
-								type="submit" value="${next_button}" />
-						</form>
-					</td>
-				</c:if>
+				</tr>
+			</table>
 
-			</tr>
-		</table>
+			<%
+				request.getSession().removeAttribute("command");
+					request.getSession().removeAttribute("currentPageNumber");
+					request.getSession().removeAttribute("numberOfAllPages");
+			%>
 
-		<%
-			request.getSession().removeAttribute("command");
-				request.getSession().removeAttribute("currentPageNumber");
-				request.getSession().removeAttribute("numberOfAllPages");
-		%>
-
-	</c:if>
+		</c:if>
+	</center>
 </body>
 </html>

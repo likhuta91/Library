@@ -54,6 +54,15 @@
 
 <body>
 
-<c:out value="${requestScope.allBooks }"></c:out>
+	<p>
+		<font size="14"> <strong><c:out
+					value="${myOrders_button}" /></strong></font>
+	</p>
+	
+	<c:if test="${empty sessionScope.allBooks}">
+		<c:out value="У вас нет ни одного заказа"></c:out>
+	</c:if>
+
+	<c:out value="${requestScope.allBooks}"></c:out>
 </body>
 </html>

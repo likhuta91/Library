@@ -54,13 +54,15 @@
 
 	<br />
 	<p>
-		<font size="20"> <strong><c:out
+		<font size="14"> <strong><c:out
 					value="${basket_button}" /></strong></font>
 	</p>
 
 	<c:if test="${empty sessionScope.allBooks}">
 		<c:out value="Ваша корзина пуста"></c:out>
 	</c:if>
+
+	<br />
 
 	<c:out value="${sessionScope.message}" />
 
@@ -87,6 +89,7 @@
 					<td><c:out value="${genre}:"></c:out></td>
 					<td><c:out value="${statuss}:"></c:out></td>
 					<td><c:out value=""></c:out></td>
+					<td><c:out value=""></c:out></td>
 				</tr>
 
 				<c:forEach items="${sessionScope.allBooks}" var="book">
@@ -96,13 +99,18 @@
 						<td><c:out value="${book.author}" /></td>
 						<td><c:out value="${book.genre}" /></td>
 						<td><c:out value="${book.status}" /></td>
-						<td><input type="checkbox" name="checkbox" value="newsletter"></td>
+						<td><input type="checkbox" name="id" value="${book.id}"><input
+							type="hidden" name="command" value="addOrder" />
+							</td>
+						<td><input type="checkbox" name="id" value="${book.id}"><input
+							type="hidden" name="command" value="deleteBookFromBasket" />
+							</td>
 					</tr>
 				</c:forEach>
 
 			</table>
-			<input type="hidden" name="command" value="orderBooks" /> <input
-				type="submit" value="${order_button}" />
+			<input type="submit" value="${order_button}" />
+			<input type="submit" value="Удалить" />
 		</form>
 	</c:if>
 
