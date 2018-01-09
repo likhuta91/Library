@@ -42,6 +42,8 @@ public class SQLHelper {
 	public static final String TITLE = "title";
 	public static final String STATUS = "status";
 	public static final String GENRE = "genre";
+	public static final String BOOK_ID = "bookId";
+	public static final String BOOK_STATUS = "bookStatus";
 
 	public static final String NAME = "name";
 	public static final String SURNAME = "surname";
@@ -50,6 +52,10 @@ public class SQLHelper {
 	public static final String EMAIL = "email";
 	public static final String LOGIN = "login";
 	public static final String RATING = "rating";
+
+	public static final String ORDER_ID = "orderId";
+	public static final String DATE = "date";
+	public static final String ORDER_STATUS = "orderStatus";
 
 	public static final String SELECT_ALL_BOOKS_QUERY = "SELECT books.id AS id,books.title AS title,group_concat(DISTINCT genre.genre) AS genre,"
 			+ "group_concat(DISTINCT authors.author) AS author, books_status.status AS status FROM books "
@@ -68,8 +74,8 @@ public class SQLHelper {
 	public static final String SELECT_ORDER_BY_USER_ID_QUERY = "SELECT orders.id AS orderId, orders.date AS date,"
 			+ "order_status.status AS orderStatus,"
 			+ "books.id AS bookId, books.title AS title, group_concat(DISTINCT genre.genre) AS genre,"
-			+ "group_concat(DISTINCT authors.author) AS author, books_status.status AS bookStatus"
-			+ "FROM orders INNER JOIN order_status ON order_status.id=orders.order_status_id "
+			+ "group_concat(DISTINCT authors.author) AS author, books_status.status AS bookStatus " + "FROM orders "
+			+ "INNER JOIN order_status ON orders.order_status_id=order_status.id "
 			+ "INNER JOIN books_orders ON books_orders.order_id=orders.id "
 			+ "INNER JOIN books ON books.id=books_orders.book_id "
 			+ "INNER JOIN books_genre AS BG2 ON BG2.books_id=books.id INNER JOIN genre ON BG2.genre_id=genre.id "
@@ -78,21 +84,20 @@ public class SQLHelper {
 			+ "INNER JOIN books_status ON books_status.id=books.books_status_id "
 			+ "WHERE orders.users_id = ? group by books.id";
 
-	/*
-	 * "SELECT orders.id AS id,orders.date AS date," +
-	 * "order_status.status AS status group_concat(DISTINCT books.id) AS books," +
-	 * "FROM orders " +
-	 * "INNER JOIN order_status ON order_status.id=orders.order_status_id " +
-	 * "INNER JOIN books ON books.id=books_orders.books_id " +
-	 * "INNER JOIN books_orders ON books_orders.orders_id=orders.id " +
-	 * "WHERE orders.users_id = ?";
-	 */
-
-	public static final String SELECT_BOOKS_BY_VALUE_QUERY = "SELECT orders.id AS id, orders.date AS date,"
+/*	public static final String SELECT_BOOKS_BY_VALUE_QUERY = "SELECT orders.id AS id, orders.date AS date,"
 			+ "order_status.status AS status, group_concat(DISTINCT books.id) AS book FROM orders "
 			+ "INNER JOIN order_status ON order_status.id = orders.order_status_id "
 			+ "INNER JOIN books_orders ON books_orders.order_id = orders.id "
-			+ "INNER JOIN books ON books.id = books_orders.book_id WHERE orders.users_id = ? group by orders.id";
+			+ "INNER JOIN books ON books.id = books_orders.book_id WHERE orders.users_id = ? group by orders.id";*/
+	
+	
+	public static final String SELECT_BOOKS_BY_VALUE_QUERY = "SELECT books.id AS id,books.title AS title,group_concat(DISTINCT genre.genre) AS genre,"
+	+ "group_concat(DISTINCT authors.author) AS author,books_status.status AS status FROM books "
+	+ "INNER JOIN books_genre AS BG2 ON BG2.books_id=books.id INNER JOIN genre ON BG2.genre_id=genre.id "
+	+ "INNER JOIN books_authors ON books_authors.books_id=books.id "
+	+ "INNER JOIN authors ON authors.id=books_authors.authors_id "
+	+ "INNER JOIN books_status ON books_status.id=books.books_status_id WHERE title LIKE ? OR author LIKE ? group by books.id";
+	
 
 	public static final String SELECT_ALL_USERS_QUERY = "SELECT data_users.name AS name,data_users.surname AS surname,data_users.city AS city,"
 			+ "data_users.country AS country,data_users.email AS email,users.login AS login,"
@@ -119,7 +124,15 @@ public class SQLHelper {
 	public static final String UPDATE_USER_PASSWORD_QUERY = "UPDATE users SET password = ? where id = ?";
 
 	public static final String DELETE_USER_QUERY = "DELETE FROM users WHERE login = ?";
-
+	
+	public static final String INSERT_INTO_ORDERS_QUERY = "INSERT INTO orders (users_id,order_status_id, date) value(?,?,now())";
+	
+	public static final String INSERT_INTO_BOOKS_ORDERS_QUERY = "INSERT INTO books_orders (book_id,order_id) value(?,?)";
+																	
+	public static final String SELECT_LAST_INSERT_ID_QUERY = "SELECT last_insert_id() AS last_insert_id";
+	
+	public static final String UPDATE_BOOK_STATUS_QUERY = "UPDATE books SET books_status_id = ? where id = ?";
+	
 	public Connection takeConnection() throws DAOException {
 
 		Connection connection = null;
@@ -166,7 +179,6 @@ public class SQLHelper {
 		try {
 			resultSet = preparedStatement.executeQuery();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			log.log(Level.ERROR, "Не получется взять ResultSet");
 			throw new DAOException("error while creating ResultSet", e);
 		}

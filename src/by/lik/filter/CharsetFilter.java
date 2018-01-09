@@ -22,9 +22,19 @@ public class CharsetFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 
+	
 		request.setCharacterEncoding(encoding);
 		response.setCharacterEncoding(encoding);
-
+		
+		
+		String[] a = request.getParameterValues("searchBook");
+		if(a!=null) {
+			for (int i = 0; i < a.length; i++) {
+				System.out.println(a[i] + " value " + i);
+			}
+		}
+		
+		
 		chain.doFilter(request, response);
 	}
 

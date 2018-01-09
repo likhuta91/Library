@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String registration(User user) throws ServiceException {
-		
+
 		Validation validation = Validation.getInstance();
 		String message = validation.validation(user);
 
@@ -47,31 +47,44 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ArrayList<User> takeAllUsers() throws ServiceException {
-		
+
 		ArrayList<User> allUsers = null;
 		try {
 			allUsers = sqlUserDao.takeAllUsers();
-			
+
 		} catch (DAOException e) {
 			throw new ServiceException("smth wrong", e);
 		}
-		
+
 		return allUsers;
 	}
 
 	@Override
 	public String сhangePassword(String newPassword, int id) throws ServiceException {
-		
+
 		Validation validation = Validation.getInstance();
 		String message = validation.validation(newPassword);
 
 		if (message == null) {
 			try {
 				message = sqlUserDao.сhangePassword(newPassword, id);
-				
+
 			} catch (DAOException e) {
 				throw new ServiceException("smth wrong", e);
 			}
+		}
+
+		return message;
+	}
+
+	@Override
+	public String deleteUserAccount(String[] idDeletedUsers) throws ServiceException {
+		String message = null;
+
+		try {
+			message = sqlUserDao.deleteUserAccount(idDeletedUsers);
+		} catch (DAOException e) {
+			throw new ServiceException("smth wrong", e);
 		}
 
 		return message;

@@ -1,6 +1,7 @@
 package by.lik.controller.helper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -8,11 +9,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import by.lik.bean.Book;
+
 public class CommandHelper {
 
 	private static volatile CommandHelper commandHelper;
+
 	private CommandHelper() {
-		
+
 	}
 
 	public static CommandHelper getInstance() {
@@ -48,7 +52,7 @@ public class CommandHelper {
 	public static final String CITY = "city";
 	public static final String COUNTRY = "country";
 	public static final String EMAIL = "email";
-	
+
 	public static final String SEARCH_BOOK = "searchBook";
 	public static final String LOGINATION = "logination";
 	public static final String REGISTRATION = "registration";
@@ -58,6 +62,9 @@ public class CommandHelper {
 	public static final String LOG_OUT = "logOut";
 	public static final String CHANGE_USER_PASSWORD = "changeUserPassword";
 	public static final String TAKE_USER_ORDERS = "takeUserOrders";
+	public static final String ADD_ORDER = "addOrder";
+	public static final String DELETE_BOOK_FROM_BASKET = "deleteBookFromBasket";
+	public static final String DELETE_USER_ACCOUNT = "deleteUserAccount";
 
 	public static final String MESSAGE = "message";
 	public static final String CURRENT_PAGE_NUMBER = "currentPageNumber";
@@ -66,6 +73,7 @@ public class CommandHelper {
 	public static final String INDEX_PATH = "index.jsp";
 	public static final String USER_PATH = "/WEB-INF/jsp/user.jsp";
 	public static final String USER_ORDER_PATH = "/WEB-INF/jsp/userOrder.jsp";
+	public static final String BASKET_PATH = "/WEB-INF/jsp/basket.jsp";
 	public static final String LOGINATION_PATH = "/WEB-INF/jsp/logination.jsp";
 	public static final String REGISTRATION_PATH = "/WEB-INF/jsp/registration.jsp";
 	public static final String CHANGE_PASSWORD_PATH = "/WEB-INF/jsp/changePassword.jsp";
@@ -102,27 +110,30 @@ public class CommandHelper {
 
 		return numberOfAllPages;
 	}
-	
+
 	public int takeCurrentPageNumber(HttpServletRequest request) {
 
 		int currentPageNumber = 1;
 
 		if (request.getParameter(CURRENT_PAGE_NUMBER) != null) {
-			
+
 			currentPageNumber = Integer.parseInt(request.getParameter(CURRENT_PAGE_NUMBER));
 		}
 
 		return currentPageNumber;
 	}
-	
-	public void putAttributeInSession(HttpServletRequest request, int currentPageNumber, int numberOfAllPages, String command) {
+
+	public void putAttributeInSession(HttpServletRequest request, int currentPageNumber, int numberOfAllPages,
+			String command) {
 
 		request.getSession().setAttribute(CommandHelper.COMMAND, command);
 		request.getSession().setAttribute(CommandHelper.CURRENT_PAGE_NUMBER, currentPageNumber);
 		request.getSession().setAttribute(CommandHelper.NUMBER_OF_ALL_PAGES, numberOfAllPages);
 
 	}
-	public void putAttributeInSession(HttpServletRequest request, int currentPageNumber, int numberOfAllPages, String command, String value) {
+
+	public void putAttributeInSession(HttpServletRequest request, int currentPageNumber, int numberOfAllPages,
+			String command, String value) {
 
 		request.getSession().setAttribute(CommandHelper.COMMAND, command);
 		request.getSession().setAttribute(CommandHelper.CURRENT_PAGE_NUMBER, currentPageNumber);
@@ -130,8 +141,9 @@ public class CommandHelper {
 		request.getSession().setAttribute(command, value);
 
 	}
-	
-	public void logOutIfUserNotAuthorized(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	public void logOutIfUserNotAuthorized(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
 		if (request.getSession().getAttribute(CommandHelper.MY_USER) == null) {
 
@@ -142,18 +154,39 @@ public class CommandHelper {
 		}
 
 	}
-	
+
 	public String takeAttributeFromRequestOrSession(HttpServletRequest request, String parametr) {
 		String value = request.getParameter(parametr);
-		
-		if(value == null) {
+
+		if (value == null) {
 			value = String.valueOf(request.getSession().getAttribute(parametr));
-		}	
-		
+		}
+
 		return value;
 	}
-	
-	
-	
+
+	public void deleteBookFromBasket(HttpServletRequest request, String[] idBooksInBasket) {
+
+		@SuppressWarnings("unchecked")
+		ArrayList<Book> booksInBasket = (ArrayList<Book>) request.getSession().getAttribute(CommandHelper.ALL_BOOKS);
+		@SuppressWarnings("unchecked")
+		ArrayList<Book> booksInOrder = (ArrayList<Book>)booksInBasket.clone();
+		
+		for (Book book : booksInBasket) {
+			for (String deletedIdBook : idBooksInBasket) {
+				if (Integer.parseInt(deletedIdBook) == book.getId()) {
+					booksInOrder.remove(book);
+				}
+			}
+		}
+		
+		if (booksInOrder.size() != 0) {
+			request.getSession().setAttribute(CommandHelper.ALL_BOOKS, booksInOrder);
+		} else {
+			request.getSession().removeAttribute(CommandHelper.ALL_BOOKS);
+		}
+		
+
+	}
 
 }

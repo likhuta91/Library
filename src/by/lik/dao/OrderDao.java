@@ -7,6 +7,7 @@ import by.lik.dao.exception.DAOException;
 
 public interface OrderDao {
 	
-	public ArrayList<Order> takeUserOrder (int userId) throws DAOException;
+	ArrayList<Order> takeUserOrder (int userId) throws DAOException;
+	String addOrder(int userId, String[] bookId) throws DAOException;
 	
 }

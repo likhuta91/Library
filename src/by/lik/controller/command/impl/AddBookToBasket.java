@@ -22,31 +22,29 @@ public class AddBookToBasket implements Command {
 		CommandHelper commandHelper = CommandHelper.getInstance();
 		commandHelper.logOutIfUserNotAuthorized(request, response);
 
-		String[] idBooksAddedToTheBasket;
+		String[] idBooksAddedToTheBasket = request.getParameterValues(CommandHelper.ID);
 		ArrayList<Book> booksListAddedToTheBasket = null;
 
-		if (request.getParameterValues(CommandHelper.ID) != null) {
+		if (idBooksAddedToTheBasket != null) {
 
-			idBooksAddedToTheBasket = request.getParameterValues(CommandHelper.ID);
-			
 			ServiceFactory serviceFactory = ServiceFactory.getInstance();
 			BookService bookService = serviceFactory.getBookService();
 
 			try {
-				
+
 				booksListAddedToTheBasket = bookService.takeBooksById(idBooksAddedToTheBasket);
 
 			} catch (ServiceException e) {
 
 				request.getSession().setAttribute(CommandHelper.MESSAGE, "Не удалось добавить книги в корзину");
 			}
-			
+
 			@SuppressWarnings("unchecked")
 			ArrayList<Book> bookInBasket = (ArrayList<Book>) request.getSession().getAttribute(CommandHelper.ALL_BOOKS);
 
 			if (bookInBasket == null) {
 				bookInBasket = booksListAddedToTheBasket;
-				
+
 			} else {
 				for (Book book : booksListAddedToTheBasket) {
 					if (!bookInBasket.contains(book)) {

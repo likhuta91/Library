@@ -183,6 +183,10 @@ public class SQLUserDao implements UserDao {
 
 		return true;
 	}
+	
+	
+	
+	
 
 	@Override
 	public User logination(String login, String password) throws DAOException {
@@ -280,6 +284,42 @@ public class SQLUserDao implements UserDao {
 			log.log(Level.ERROR, "ошибка во время изменения пароля пользователя");
 			throw new DAOException("error while retrieving users", exception);
 		} 
+		return message;
+	}
+
+	@Override
+	public String deleteUserAccount(String[] idDeletedUsers) throws DAOException {
+	
+		String message = null;
+		
+Connection connection = sqlHelper.takeConnection();
+PreparedStatement preparedStatement;
+		
+		try {
+			connection.setAutoCommit(false);
+			/*preparedStatement = sqlHelper.takePreparedStatement(connection, sqlQuery);
+			preparedStatement.setString(1, argument1);
+			preparedStatement.executeUpdate();*/
+
+			connection.commit();
+
+		} catch (SQLException exception) {
+
+			//connection.rollback();
+
+			log.log(Level.ERROR, "Ошибка во время удаления пользователя");
+			throw new DAOException("error while deleted users", exception);
+
+		} finally {
+			if (connection != null) {
+				//connection.close();
+			}
+		}
+
+
+		
+		
+		
 		return message;
 	}
 

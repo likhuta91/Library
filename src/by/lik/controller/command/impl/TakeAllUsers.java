@@ -34,8 +34,6 @@ public class TakeAllUsers implements Command {
 
 		int currentPageNumber = commandHelper.takeCurrentPageNumber(request);
 		int numberOfAllPages;
-		
-		
 
 		try {
 			allUsers = userService.takeAllUsers();
