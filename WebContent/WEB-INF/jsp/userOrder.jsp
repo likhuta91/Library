@@ -8,6 +8,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+<style>
+body {
+	background-image: url(images/bground.jpg);
+	background-color: #c7b39b;
+}
+</style>
+
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
 <fmt:message bundle="${loc}" key="local.message.welcome" var="message" />
@@ -15,37 +22,11 @@
 	var="ru_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.en"
 	var="en_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.allBooks"
-	var="allBooks_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.allUsers"
-	var="allUsers_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.logOut"
-	var="logOut_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.enter"
-	var="enter_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.changePassword"
-	var="changePassword_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.next"
-	var="next_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.previous"
-	var="previous_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.search"
-	var="search_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.basket"
-	var="basket_button" />
-<fmt:message bundle="${loc}" key="local.locbutton.name.addToBasket"
-	var="addToBasket_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.myOrders"
 	var="myOrders_button" />
 
-<fmt:message bundle="${loc}" key="local.message.id" var="id" />
-<fmt:message bundle="${loc}" key="local.message.login" var="login" />
-<fmt:message bundle="${loc}" key="local.message.name" var="name" />
-<fmt:message bundle="${loc}" key="local.message.surname" var="surname" />
-<fmt:message bundle="${loc}" key="local.message.city" var="city" />
-<fmt:message bundle="${loc}" key="local.message.country" var="country" />
-<fmt:message bundle="${loc}" key="local.message.email" var="email" />
-<fmt:message bundle="${loc}" key="local.message.status" var="statuss" />
+<fmt:message bundle="${loc}" key="local.message.idOrders" var="idOrders" />
+<fmt:message bundle="${loc}" key="local.message.status" var="status" />
 <fmt:message bundle="${loc}" key="local.message.author" var="author" />
 <fmt:message bundle="${loc}" key="local.message.title" var="title" />
 <fmt:message bundle="${loc}" key="local.message.genre" var="genre" />
@@ -54,15 +35,79 @@
 
 <body>
 
+	<table>
+		<tr>
+			<td>
+				<form action="FrontController" method="get">
+					<input type="hidden" name="command" value="changeLocalization" />
+					<input type="hidden" name="local" value="ru" /> <input
+						type="submit" value="${ru_button}" />
+				</form>
+			</td>
+
+			<td>
+				<form action="FrontController" method="get">
+					<input type="hidden" name="command" value="changeLocalization" />
+					<input type="hidden" name="local" value="en" /> <input
+						type="submit" value="${en_button}" />
+				</form>
+			</td>
+
+		</tr>
+	</table>
+
 	<p>
 		<font size="14"> <strong><c:out
 					value="${myOrders_button}" /></strong></font>
 	</p>
-	
-	<c:if test="${empty sessionScope.allBooks}">
+
+	<c:if test="${not empty requestScope.orders}">
+
+		<table border="1" cellspacing="0" cellpadding="5">
+			<tr>
+				<td><c:out value="${idOrders}:"></c:out></td>
+				<td><c:out value="${status}:"></c:out></td>
+				<td><c:out value="${title}:"></c:out></td>
+				<td><c:out value="${author}:"></c:out></td>
+				<td><c:out value="${genre}:"></c:out></td>
+			</tr>
+
+			<c:forEach items="${requestScope.orders}" var="order">
+				<tr>
+					<td><c:out value="${order.id}" /></td>
+					<td><c:out value="${order.status}" /></td>
+
+					<td><table border="0" cellspacing="0" cellpadding="0">
+							<c:forEach items="${order.books}" var="book">
+								<tr>
+									<td><c:out value="${book.title}" /></td>
+								</tr>
+							</c:forEach>
+						</table></td>
+					<td><table border="0" cellspacing="0" cellpadding="0">
+							<c:forEach items="${order.books}" var="book">
+								<tr>
+									<td><c:out value="${book.author}" /></td>
+								</tr>
+							</c:forEach>
+						</table></td>
+					<td><table border="0" cellspacing="0" cellpadding="0">
+							<c:forEach items="${order.books}" var="book">
+								<tr>
+									<td><c:out value="${book.genre}" /></td>
+								</tr>
+							</c:forEach>
+						</table></td>
+				</tr>
+			</c:forEach>
+
+		</table>
+
+	</c:if>
+
+	<c:if test="${empty requestScope.orders}">
 		<c:out value="У вас нет ни одного заказа"></c:out>
 	</c:if>
 
-	<c:out value="${requestScope.allBooks}"></c:out>
 </body>
 </html>

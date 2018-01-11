@@ -8,6 +8,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+<style>
+body {
+	background-image: url(images/bground.jpg);
+	background-color: #c7b39b;
+}
+</style>
+
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
 <fmt:message bundle="${loc}" key="local.message.welcome" var="message" />
@@ -35,6 +42,8 @@
 	var="basket_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.addToBasket"
 	var="addToBasket_button" />
+<fmt:message bundle="${loc}" key="local.locbutton.name.delete"
+	var="delete_button" />
 <fmt:message bundle="${loc}" key="local.locbutton.name.myOrders"
 	var="myOrders_button" />
 
@@ -85,7 +94,6 @@
 		<input type="hidden" name="command" value="takeUserOrders" /><input
 			type="submit" value="${myOrders_button}" />
 	</form>
-
 
 
 	<br />
@@ -221,12 +229,12 @@
 						<td><c:out value="${user.country}" /></td>
 						<td><c:out value="${user.email}" /></td>
 						<td><c:out value="${user.status}" /></td>
-						<td><input type="checkbox" name="id" value="${book.id}"></td>
+						<td><input type="checkbox" name="id" value="${user.id}"></td>
 					</tr>
 				</c:forEach>
 			</table>
 			<input type="hidden" name="command" value="deleteUserAccount" /> <input
-				type="submit" value="${addToBasket_button}" />
+				type="submit" value="${delete_button}" />
 		</form>
 	</c:if>
 
@@ -246,7 +254,7 @@
 							</form>
 						</td>
 					</c:if>
-					<td><c:out value="    ${sessionScope.currentPageNumber}    "></c:out></td>
+					<td><c:out value="${sessionScope.currentPageNumber}"></c:out></td>
 
 					<c:if
 						test="${sessionScope.currentPageNumber<sessionScope.numberOfAllPages}">

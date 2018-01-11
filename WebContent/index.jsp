@@ -8,6 +8,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+<style>
+body {
+	background-image: url(images/bground.jpg);
+	background-color: #c7b39b;
+}
+</style>
+
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
 <fmt:message bundle="${loc}" key="local.message.start" var="message" />
@@ -56,14 +63,15 @@
 				request.getSession().setAttribute("url", request.getRequestURL().toString());
 			%>
 			<c:out value="${message}!" />
-			
+
 		</c:if>
-		
+
 		<c:out value="${sessionScope.message}" />
-	<%
-		request.getSession().removeAttribute("message");
-	%>
 		
+		<%
+			request.getSession().removeAttribute("message");
+		%>
+
 		<form action="FrontController" method="get">
 			<input type="hidden" name="command" value="goToGsp" /> <input
 				type="hidden" name="gspName" value="/WEB-INF/jsp/registration.jsp" />

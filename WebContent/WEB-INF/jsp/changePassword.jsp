@@ -8,6 +8,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+<style>
+body {
+	background-image: url(images/bground.jpg);
+	background-color: #c7b39b;
+}
+</style>
+
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
 <fmt:message bundle="${loc}" key="local.message.welcome" var="message" />
@@ -59,7 +66,7 @@
 		: <br />
 		<form action="FrontController" method="post">
 			<input type="hidden" name="command" value="changeUserPassword" /> <input
-				required type="text" name="password" value="" /> <input
+				required type="password" name="password" value="" /> <input
 				type="submit" value="${enter_button}" />
 		</form>
 		<c:out value="${sessionScope.message}" />

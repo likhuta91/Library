@@ -8,6 +8,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+<style>
+body {
+	background-image: url(images/bground.jpg);
+	background-color: #c7b39b;
+}
+</style>
+
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
 
@@ -58,7 +65,7 @@
 					value="${basket_button}" /></strong></font>
 	</p>
 
-	<c:if test="${empty sessionScope.allBooks}">
+	<c:if test="${empty sessionScope.basket}">
 		<c:out value="Ваша корзина пуста"></c:out>
 	</c:if>
 
@@ -78,7 +85,7 @@
 	<br />
 	<br />
 
-	<c:if test="${not empty sessionScope.allBooks}">
+	<c:if test="${not empty sessionScope.basket}">
 		<form action="FrontController" method="get">
 			<table border="0" cellspacing="0" cellpadding="5">
 
@@ -89,10 +96,9 @@
 					<td><c:out value="${genre}:"></c:out></td>
 					<td><c:out value="${statuss}:"></c:out></td>
 					<td><c:out value=""></c:out></td>
-					<td><c:out value=""></c:out></td>
 				</tr>
 
-				<c:forEach items="${sessionScope.allBooks}" var="book">
+				<c:forEach items="${sessionScope.basket}" var="book">
 					<tr>
 						<td><c:out value="${book.id}" /></td>
 						<td><c:out value="${book.title}" /></td>
@@ -100,17 +106,12 @@
 						<td><c:out value="${book.genre}" /></td>
 						<td><c:out value="${book.status}" /></td>
 						<td><input type="checkbox" name="id" value="${book.id}"><input
-							type="hidden" name="command" value="addOrder" />
-							</td>
-						<td><input type="checkbox" name="id" value="${book.id}"><input
-							type="hidden" name="command" value="deleteBookFromBasket" />
-							</td>
+							type="hidden" name="command" value="addOrder" /></td>
 					</tr>
 				</c:forEach>
 
 			</table>
 			<input type="submit" value="${order_button}" />
-			<input type="submit" value="Удалить" />
 		</form>
 	</c:if>
 

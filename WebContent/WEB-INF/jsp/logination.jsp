@@ -8,6 +8,13 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 
+<style>
+body {
+	background-image: url(images/bground.jpg);
+	background-color: #c7b39b;
+}
+</style>
+
 <fmt:setLocale value="${sessionScope.local}" />
 <fmt:setBundle basename="localization.local" var="loc" />
 <fmt:message bundle="${loc}" key="local.message.login" var="login" />
@@ -41,7 +48,7 @@
 			</td>
 		</tr>
 	</table>
-	
+
 	<br />
 	<br />
 	<br />
@@ -49,23 +56,23 @@
 	<br />
 	<br />
 	<br />
-	
+
 	<center>
-	<c:out value="${sessionScope.message}" />
-	<%
-	request.getSession().removeAttribute("message");
-	%>
+		<c:out value="${sessionScope.message}" />
+		<%
+			request.getSession().removeAttribute("message");
+		%>
 
-	<form action="FrontController" method="post">
-		<input type="hidden" name="command" value="logination" />
+		<form action="FrontController" method="post">
+			<input type="hidden" name="command" value="logination" />
 
-		<c:out value="${login}" />
-		:<br /> <input type="text" name="login" value="" /><br />
+			<c:out value="${login}" />
+			:<br /> <input type="text" name="login" value="" /><br />
 
-		<c:out value="${password}" />
-		:<br /> <input type="password" name="password" value="" /><br /> <input
-			type="submit" value="${reg_button}" /><br />
-	</form>
-</center>
+			<c:out value="${password}" />
+			:<br /> <input type="password" name="password" value="" /><br /> <input
+				type="submit" value="${reg_button}" /><br />
+		</form>
+	</center>
 </body>
 </html>
