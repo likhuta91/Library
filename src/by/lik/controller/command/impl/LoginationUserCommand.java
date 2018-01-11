@@ -17,8 +17,8 @@ public class LoginationUserCommand implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		String goToPage;
-		RequestDispatcher dispatcher;
 
 		ServiceFactory serviceFactory = ServiceFactory.getInstance();
 		UserService userService = serviceFactory.getUserService();
@@ -32,8 +32,8 @@ public class LoginationUserCommand implements Command {
 			if (user != null) {
 
 				String url = request.getRequestURL().toString() + CommandHelper.GO_TO_GSP_COMMAND+CommandHelper.USER_PATH;
+				
 				request.getSession().setAttribute(CommandHelper.URL, url);
-
 				request.getSession().setAttribute(CommandHelper.MY_USER, user);
 
 				goToPage = CommandHelper.USER_PATH;
@@ -49,7 +49,7 @@ public class LoginationUserCommand implements Command {
 			goToPage = CommandHelper.LOGINATION_PATH;
 		}
 
-		dispatcher = request.getRequestDispatcher(goToPage);
+		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
 		dispatcher.forward(request, response);
 
 	}

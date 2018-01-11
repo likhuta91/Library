@@ -40,7 +40,7 @@ public class AddBookToBasket implements Command {
 			}
 
 			@SuppressWarnings("unchecked")
-			ArrayList<Book> bookInBasket = (ArrayList<Book>) request.getSession().getAttribute(CommandHelper.ALL_BOOKS);
+			ArrayList<Book> bookInBasket = (ArrayList<Book>) request.getSession().getAttribute(CommandHelper.BASKET);
 
 			if (bookInBasket == null) {
 				bookInBasket = booksListAddedToTheBasket;
@@ -52,7 +52,7 @@ public class AddBookToBasket implements Command {
 					}
 				}
 			}
-			request.getSession().setAttribute(CommandHelper.ALL_BOOKS, bookInBasket);
+			request.getSession().setAttribute(CommandHelper.BASKET, bookInBasket);
 		}
 
 		response.sendRedirect(request.getSession().getAttribute(CommandHelper.URL).toString());

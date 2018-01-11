@@ -21,7 +21,9 @@ public class UserServiceImpl implements UserService {
 
 		try {
 			user = sqlUserDao.logination(login, password);
+			
 		} catch (DAOException e) {
+			
 			throw new ServiceException("smth wrong", e);
 		}
 		return user;
@@ -34,9 +36,12 @@ public class UserServiceImpl implements UserService {
 		String message = validation.validation(user);
 
 		if (message == null) {
+			
 			try {
 				message = sqlUserDao.registration(user);
+				
 			} catch (DAOException e) {
+				
 				throw new ServiceException("smth wrong", e);
 			}
 		}
@@ -49,10 +54,12 @@ public class UserServiceImpl implements UserService {
 	public ArrayList<User> takeAllUsers() throws ServiceException {
 
 		ArrayList<User> allUsers = null;
+		
 		try {
 			allUsers = sqlUserDao.takeAllUsers();
 
 		} catch (DAOException e) {
+			
 			throw new ServiceException("smth wrong", e);
 		}
 
@@ -63,7 +70,7 @@ public class UserServiceImpl implements UserService {
 	public String сhangePassword(String newPassword, int id) throws ServiceException {
 
 		Validation validation = Validation.getInstance();
-		String message = validation.validation(newPassword);
+		String message = validation.validationPassword(newPassword);
 
 		if (message == null) {
 			try {
@@ -78,8 +85,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String deleteUserAccount(String[] idDeletedUsers) throws ServiceException {
+	public String deleteUserAccount(ArrayList<Integer> idDeletedUsers) throws ServiceException {
 		String message = null;
+		
+		if(idDeletedUsers.size()==0) {
+			return "У пользователя есть не завершенные заказы. Аккаунт пользователя не удален";
+		}
 
 		try {
 			message = sqlUserDao.deleteUserAccount(idDeletedUsers);

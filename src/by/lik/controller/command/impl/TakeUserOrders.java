@@ -25,6 +25,7 @@ public class TakeUserOrders implements Command {
 	
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		CommandHelper commandHelper = CommandHelper.getInstance();
 		commandHelper.logOutIfUserNotAuthorized(request, response);
 		
@@ -40,15 +41,19 @@ public class TakeUserOrders implements Command {
 			userOrders = orderService.takeUserOrder(user.getId());
 
 		} catch (ServiceException e) {
+			
 			log.log(Level.ERROR, "Ошибка при получении списка заказов пользователя");
 			request.getSession().setAttribute(CommandHelper.MESSAGE, "Не удалось получить информацию о ваших заказах");
 		}
 
 		if (userOrders == null) {
+			
 			request.setAttribute(CommandHelper.MESSAGE, "У вас нет ни одного заказа");
 			log.log(Level.DEBUG, "Cписок заказов пуст");
+			
 		} else {
-			request.setAttribute(CommandHelper.ALL_BOOKS, userOrders);
+			
+			request.setAttribute(CommandHelper.ORDERS, userOrders);
 			log.log(Level.DEBUG, "Cписок заказов не пустой");
 		}
 		

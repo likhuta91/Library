@@ -20,12 +20,13 @@ public class AddOrder implements Command {
 
 		CommandHelper commandHelper = CommandHelper.getInstance();
 		commandHelper.logOutIfUserNotAuthorized(request, response);
+		
+		String[] booksInBasket = request.getParameterValues(CommandHelper.ID);
 
-		if (request.getParameterValues(CommandHelper.ID) != null) {
+		if (booksInBasket != null) {
+			
 			ServiceFactory serviceFactory = ServiceFactory.getInstance();
 			OrderService orderService = serviceFactory.getOrderService();
-
-			String[] booksInBasket = request.getParameterValues(CommandHelper.ID);
 
 			String message;
 
@@ -43,7 +44,6 @@ public class AddOrder implements Command {
 				} else {
 
 					request.getSession().setAttribute(CommandHelper.MESSAGE, message);
-
 				}
 
 			} catch (ServiceException e) {
@@ -53,8 +53,8 @@ public class AddOrder implements Command {
 			}
 
 		}
+		
 		response.sendRedirect(request.getSession().getAttribute(CommandHelper.URL).toString());
-
 	}
 
 }

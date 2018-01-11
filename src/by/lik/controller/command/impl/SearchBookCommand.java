@@ -60,15 +60,11 @@ public class SearchBookCommand implements Command {
 			commandHelper.putAttributeInSession(request, currentPageNumber, numberOfAllPages, CommandHelper.SEARCH_BOOK,
 					value);
 		}
-		System.out
-				.println(request.getSession().getAttribute(CommandHelper.URL) + " in searchBookCommand до смены урла");
+		
 		String url = commandHelper.takeURL(request);
 
-		System.out.println(url + " in searchBookCommand STring url;");
-
 		request.getSession().setAttribute(CommandHelper.URL, url);
-		System.out.println(
-				request.getSession().getAttribute(CommandHelper.URL) + " in searchBookCommand после смены урла");
+//System.out.println(request.getSession().getAttribute(CommandHelper.URL) + " in searchBookCommand после смены урла");
 
 		RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
 		dispatcher.forward(request, response);

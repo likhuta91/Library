@@ -9,41 +9,53 @@ public class Order {
 	private String status;
 	private int userId;
 	private Date date;
+	
 	public int getId() {
 		return id;
 	}
+	
 	public void setId(int id) {
 		this.id = id;
 	}
+	
 	public ArrayList<Book> getBooks() {
 		return books;
 	}
+	
 	public void setBooks(ArrayList<Book> books) {
 		this.books = books;
 	}
+	
 	public String getStatus() {
 		return status;
 	}
+	
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
 	public int getUserId() {
 		return userId;
 	}
+	
 	public void setUserId(int userId) {
 		this.userId = userId;
 	}
+	
 	public Date getDate() {
 		return date;
 	}
+	
 	public void setDate(Date date) {
 		this.date = date;
 	}
+	
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", books=" + books + ", status=" + status + ", userId=" + userId + ", date=" + date
 				+ "]";
 	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -55,6 +67,7 @@ public class Order {
 		result = prime * result + userId;
 		return result;
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

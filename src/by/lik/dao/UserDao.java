@@ -9,5 +9,5 @@ public interface UserDao {
 	String registration(User user) throws DAOException;
 	ArrayList<User> takeAllUsers()throws DAOException;
 	String сhangePassword (String newPassword, int id)throws DAOException;
-	String deleteUserAccount(String [] idDeletedUsers)throws DAOException;
+	String deleteUserAccount(ArrayList<Integer> idDeletedUsers)throws DAOException;
 }

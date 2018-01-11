@@ -16,6 +16,7 @@ public class RegistrationUserCommand implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		User user = new User();
 		String defaultUserStatus = "1";
 		int defaultUserRating = 0;

@@ -16,7 +16,7 @@ public class ChangeLocalization implements Command {
 		request.getSession(true).setAttribute(CommandHelper.LOCAL, request.getParameter(CommandHelper.LOCAL));
 
 		String url = request.getSession().getAttribute(CommandHelper.URL).toString();
-System.out.println(url + " in changeLocale");
+//System.out.println(url + " in changeLocale");
 		response.sendRedirect(url);
 
 	}

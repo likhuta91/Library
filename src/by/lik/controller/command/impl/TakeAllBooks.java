@@ -20,6 +20,7 @@ public class TakeAllBooks implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		CommandHelper commandHelper = CommandHelper.getInstance();
 		commandHelper.logOutIfUserNotAuthorized(request, response);	
 		

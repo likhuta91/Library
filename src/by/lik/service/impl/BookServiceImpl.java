@@ -9,6 +9,7 @@ import by.lik.service.BookService;
 import by.lik.service.exception.ServiceException;
 
 public class BookServiceImpl implements BookService {
+	
 	private DAOFactory daoFactory = DAOFactory.getDaoFactory();
 	private BookDao sqlBookDao = daoFactory.getBookDao();
 
@@ -31,7 +32,8 @@ public class BookServiceImpl implements BookService {
 
 		ArrayList<Book> bookList = null;
 
-		value = value.replaceAll("[\\s]{2,}", " ");
+		value = value.replaceAll("[\\s]{2,}", " "); //удаление повторяющихся пробелов
+		
 		try {
 			bookList = sqlBookDao.searchBook(value);
 
@@ -59,6 +61,7 @@ public class BookServiceImpl implements BookService {
 
 	@Override
 	public ArrayList<Book> takeBooksById(String[] booksId) throws ServiceException {
+		
 		ArrayList<Book> allBooks = null;
 
 		try {

@@ -23,6 +23,7 @@ public class SQLOrderDao implements OrderDao {
 
 	@Override
 	public ArrayList<Order> takeUserOrder(int userId) throws DAOException {
+		
 		ArrayList<Order> userOrder = new ArrayList<>();
 
 		try (Connection connection = sqlHelper.takeConnection()) {
@@ -44,26 +45,28 @@ public class SQLOrderDao implements OrderDao {
 				orderId = resultSet.getInt(SQLHelper.ORDER_ID);
 
 				if (userOrder.size() == 0) {
+					
 					order = createOrder(resultSet, book, userId);
 					userOrder.add(order);
-
+					
 				} else {
 					for (int i = 0; i < userOrder.size(); i++) {
 
 						if (userOrder.get(i).getId() == orderId) {
+	
 							userOrder.get(i).getBooks().add(book);
 							break;
-						}
-						if (i == userOrder.size() - 1) {
-
+						}else if (i == userOrder.size() - 1) {
+							
 							order = createOrder(resultSet, book, userId);
 							userOrder.add(order);
+							break;
 						}
 					}
 				}
-
+				
 			}
-
+			
 			if (userOrder.size() == 0) {
 				userOrder = null;
 				log.log(Level.DEBUG, "Cписок заказов пуст");
@@ -102,7 +105,7 @@ public class SQLOrderDao implements OrderDao {
 			log.log(Level.DEBUG, "Книга создана");
 
 		} catch (SQLException e) {
-			e.printStackTrace();
+	
 			log.log(Level.ERROR, "Не получается создать книгу");
 			throw new DAOException("error while creating book", e);
 		}
@@ -131,13 +134,15 @@ public class SQLOrderDao implements OrderDao {
 			order.setUserId(userId);
 			order.setStatus(orderStatus);
 			order.setDate(date);
+			books.add(book);
 			order.setBooks(books);
-			order.getBooks().add(book);
+			
 			log.log(Level.DEBUG, "Книга добавлена в заказ");
 
-		} catch (SQLException e) {
+		} catch (SQLException exception) {
+			
 			log.log(Level.ERROR, "Не получается создать заказ");
-			throw new DAOException("error while creating book", e);
+			throw new DAOException("error while creating book", exception);
 		}
 
 		return order;
@@ -183,6 +188,7 @@ public class SQLOrderDao implements OrderDao {
 				preparedStatement.setInt(2, Integer.parseInt(id));
 				preparedStatement.executeUpdate();
 			}
+			
 			connection.commit();
 
 		} catch (SQLException exception) {

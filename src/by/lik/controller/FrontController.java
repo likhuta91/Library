@@ -28,7 +28,9 @@ public class FrontController extends HttpServlet {
 		String commandName = request.getParameter(CommandHelper.COMMAND);
 		
 		Command commandObject = provider.getCommand(commandName);
+		
 		log.log(Level.TRACE, "url " + request.getQueryString() + " in doGet");
+		
 		commandObject.execute(request, response);
 		
 	}
@@ -39,7 +41,9 @@ public class FrontController extends HttpServlet {
 		String commandName = request.getParameter(CommandHelper.COMMAND);
 
 		Command commandObject = provider.getCommand(commandName);
+		
 		log.log(Level.TRACE, "url " + request.getQueryString() + " in doPost");
+		
 		commandObject.execute(request, response);
 		
 		

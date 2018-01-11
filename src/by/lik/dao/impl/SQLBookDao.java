@@ -24,6 +24,7 @@ public class SQLBookDao implements BookDao {
 		Book book = new Book();
 
 		try {
+			
 			book.setId(resultSet.getInt(SQLHelper.ID));
 			book.setAuthor(resultSet.getString(SQLHelper.AUTHOR));
 			book.setTitle(resultSet.getString(SQLHelper.TITLE));
@@ -31,6 +32,7 @@ public class SQLBookDao implements BookDao {
 			book.setGenre(resultSet.getString(SQLHelper.GENRE));
 
 		} catch (SQLException e) {
+			
 			log.log(Level.ERROR, "Не получается создать книгу");
 			throw new DAOException("error while creating book", e);
 		}
@@ -67,12 +69,14 @@ public class SQLBookDao implements BookDao {
 
 	@Override
 	public boolean add(Book book) throws DAOException {
-
+		
+		// Когда-нибудь реализую
 		return false;
 	}
 
 	@Override
 	public ArrayList<Book> searchBook(String value) throws DAOException {
+		
 		ArrayList<Book> allBooks = new ArrayList<>();
 
 		value = "%" + value + "%";
@@ -107,6 +111,7 @@ public class SQLBookDao implements BookDao {
 
 	@Override
 	public ArrayList<Book> takeBooksById(String[] stringBooksId) throws DAOException {
+		
 		ArrayList<Book> allBooks = new ArrayList<>();
 		Book book;
 		
@@ -126,11 +131,11 @@ public class SQLBookDao implements BookDao {
 				}
 
 			} catch (SQLException e) {
-				e.printStackTrace();
 				log.log(Level.ERROR, "Ошибка во время получения списка всех книг");
 				throw new DAOException("error while retrieving users", e);
 			}
 		}
+		
 		return allBooks;
 	}
 

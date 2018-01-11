@@ -17,6 +17,7 @@ public class ChangeUserPasswordCommand implements Command {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		CommandHelper commandHelper = CommandHelper.getInstance();
 		commandHelper.logOutIfUserNotAuthorized(request, response);
 
@@ -28,6 +29,7 @@ public class ChangeUserPasswordCommand implements Command {
 
 		String password = request.getParameter(CommandHelper.PASSWORD);
 		User user = (User) request.getSession().getAttribute(CommandHelper.MY_USER);
+		
 		int id = user.getId();
 
 		try {
@@ -36,7 +38,6 @@ public class ChangeUserPasswordCommand implements Command {
 			if (message == null) {
 
 				request.getSession().setAttribute(CommandHelper.MESSAGE, "Пароль успешно изменен");
-
 			} else {
 
 				request.getSession().setAttribute(CommandHelper.MESSAGE, message);

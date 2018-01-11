@@ -26,14 +26,12 @@ public class CharsetFilter implements Filter {
 		request.setCharacterEncoding(encoding);
 		response.setCharacterEncoding(encoding);
 		
-		
-		String[] a = request.getParameterValues("searchBook");
+/*		String[] a = request.getParameterValues("searchBook");
 		if(a!=null) {
 			for (int i = 0; i < a.length; i++) {
 				System.out.println(a[i] + " value " + i);
 			}
-		}
-		
+		}	*/
 		
 		chain.doFilter(request, response);
 	}

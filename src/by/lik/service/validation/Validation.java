@@ -21,37 +21,38 @@ public class Validation {
 		return localInstance;
 	}
 
-	private String passwordValidate = "[a-zA-Z\\d]+";
-	private String nameValidate = "([a-zA-Z\\- ]+)||([а-яА-Я\\- ]+)";
-	private String emailValidate = "[.[^@\\s]]+@([.[^@\\s]]+)\\.([a-z]+)";
+	private final String PASSWORD_VALIDATE = "[a-zA-Z\\d]+";
+	private String NAME_VALIDATE = "([a-zA-Z\\- ]+)||([а-яА-Я\\- ]+)";
+	private String EMAIL_VALIDATE = "[.[^@\\s]]+@([.[^@\\s]]+)\\.([a-z]+)";
 
 	public String validation(User user) throws ServiceException {
 
-		if (!Pattern.matches(passwordValidate, user.getPassword())) {
+		if (!Pattern.matches(PASSWORD_VALIDATE, user.getPassword())) {
 			return "В пароле использованы недопустимые символы";
 		}
-		if (!Pattern.matches(emailValidate, user.getEmail())) {
+		if (!Pattern.matches(EMAIL_VALIDATE, user.getEmail())) {
 			return "В адресе электронной почты использованы недопустимые символы";
 		}
-		if (!Pattern.matches(nameValidate, user.getName())) {
+		if (!Pattern.matches(NAME_VALIDATE, user.getName())) {
 			return "В имени использованы недопустимые символы";
 		}
-		if (!Pattern.matches(nameValidate, user.getSurname())) {
+		if (!Pattern.matches(NAME_VALIDATE, user.getSurname())) {
 			return "В фамилии использованы недопустимые символы";
 		}
-		if (!Pattern.matches(nameValidate, user.getCountry())) {
+		if (!Pattern.matches(NAME_VALIDATE, user.getCountry())) {
 			return "В названии страны использованы недопустимые символы";
 		}
-		if (!Pattern.matches(nameValidate, user.getCity())) {
+		if (!Pattern.matches(NAME_VALIDATE, user.getCity())) {
 			return "В названии города использованы недопустимые символы";
 		}
 
 		return null;
 	}
 
-	public String validation(String password) throws ServiceException {
+	public String validationPassword (String password) throws ServiceException {
 
-		if (!Pattern.matches(passwordValidate, password)) {
+		if (!Pattern.matches(PASSWORD_VALIDATE, password)) {
+			
 			return "В пароле использованы недопустимые символы";
 		}
 

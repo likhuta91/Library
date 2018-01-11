@@ -24,8 +24,8 @@ public class DeleteBookFromBasket implements Command {
 			commandHelper.deleteBookFromBasket(request, booksInBasket);
 
 		}
+		
 		response.sendRedirect(request.getSession().getAttribute(CommandHelper.URL).toString());
-
 	}
 
 }

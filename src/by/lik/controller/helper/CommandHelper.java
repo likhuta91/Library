@@ -40,6 +40,8 @@ public class CommandHelper {
 	public static final String LOCAL = "local";
 	public static final String MY_USER = "myUser";
 	public static final String ALL_BOOKS = "allBooks";
+	public static final String BASKET = "basket";
+	public static final String ORDERS = "orders";
 	public static final String ALL_USERS = "allUsers";
 	public static final String COMMAND = "command";
 	public static final String ADD_BOOK_TO_BASKET = "addBookToBasket";
@@ -148,7 +150,10 @@ public class CommandHelper {
 		if (request.getSession().getAttribute(CommandHelper.MY_USER) == null) {
 
 			String goToPage = CommandHelper.INDEX_PATH;
+			
+			request.getSession().removeAttribute(CommandHelper.BASKET);
 			request.getSession().setAttribute(MESSAGE, "Вы не авторизованы");
+			
 			RequestDispatcher dispatcher = request.getRequestDispatcher(goToPage);
 			dispatcher.forward(request, response);
 		}
@@ -168,7 +173,7 @@ public class CommandHelper {
 	public void deleteBookFromBasket(HttpServletRequest request, String[] idBooksInBasket) {
 
 		@SuppressWarnings("unchecked")
-		ArrayList<Book> booksInBasket = (ArrayList<Book>) request.getSession().getAttribute(CommandHelper.ALL_BOOKS);
+		ArrayList<Book> booksInBasket = (ArrayList<Book>) request.getSession().getAttribute(CommandHelper.BASKET);
 		@SuppressWarnings("unchecked")
 		ArrayList<Book> booksInOrder = (ArrayList<Book>)booksInBasket.clone();
 		
@@ -181,9 +186,9 @@ public class CommandHelper {
 		}
 		
 		if (booksInOrder.size() != 0) {
-			request.getSession().setAttribute(CommandHelper.ALL_BOOKS, booksInOrder);
+			request.getSession().setAttribute(CommandHelper.BASKET, booksInOrder);
 		} else {
-			request.getSession().removeAttribute(CommandHelper.ALL_BOOKS);
+			request.getSession().removeAttribute(CommandHelper.BASKET);
 		}
 		
 

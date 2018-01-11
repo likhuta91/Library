@@ -74,7 +74,7 @@ public class SQLHelper {
 	public static final String SELECT_ORDER_BY_USER_ID_QUERY = "SELECT orders.id AS orderId, orders.date AS date,"
 			+ "order_status.status AS orderStatus,"
 			+ "books.id AS bookId, books.title AS title, group_concat(DISTINCT genre.genre) AS genre,"
-			+ "group_concat(DISTINCT authors.author) AS author, books_status.status AS bookStatus " + "FROM orders "
+			+ "group_concat(DISTINCT authors.author) AS author, books_status.status AS bookStatus FROM orders "
 			+ "INNER JOIN order_status ON orders.order_status_id=order_status.id "
 			+ "INNER JOIN books_orders ON books_orders.order_id=orders.id "
 			+ "INNER JOIN books ON books.id=books_orders.book_id "
@@ -84,12 +84,13 @@ public class SQLHelper {
 			+ "INNER JOIN books_status ON books_status.id=books.books_status_id "
 			+ "WHERE orders.users_id = ? group by books.id";
 
-/*	public static final String SELECT_BOOKS_BY_VALUE_QUERY = "SELECT orders.id AS id, orders.date AS date,"
-			+ "order_status.status AS status, group_concat(DISTINCT books.id) AS book FROM orders "
-			+ "INNER JOIN order_status ON order_status.id = orders.order_status_id "
-			+ "INNER JOIN books_orders ON books_orders.order_id = orders.id "
-			+ "INNER JOIN books ON books.id = books_orders.book_id WHERE orders.users_id = ? group by orders.id";*/
+	public static final String DELETE_FROM_DATA_USERS_BY_USER_ID_QUERY = "DELETE FROM data_users USING users,data_users WHERE users.id = ? AND data_users.users_id = users.id";
 	
+	public static final String DELETE_FROM_BOOKS_ORDERS_BY_USER_ID_QUERY = "DELETE FROM books_orders USING orders,books_orders WHERE orders.users_id = ? AND orders.id = books_orders.order_id";
+	
+	public static final String DELETE_FROM_ORDERS_BY_USER_ID_QUERY = "DELETE FROM orders USING orders,users	WHERE users_id = ? AND orders.users_id=users.id";
+	
+	public static final String DELETE_FROM_USERS_BY_ID_QUERY = "DELETE FROM users WHERE users.id=?";	
 	
 	public static final String SELECT_BOOKS_BY_VALUE_QUERY = "SELECT books.id AS id,books.title AS title,group_concat(DISTINCT genre.genre) AS genre,"
 	+ "group_concat(DISTINCT authors.author) AS author,books_status.status AS status FROM books "
@@ -98,7 +99,6 @@ public class SQLHelper {
 	+ "INNER JOIN authors ON authors.id=books_authors.authors_id "
 	+ "INNER JOIN books_status ON books_status.id=books.books_status_id WHERE title LIKE ? OR author LIKE ? group by books.id";
 	
-
 	public static final String SELECT_ALL_USERS_QUERY = "SELECT data_users.name AS name,data_users.surname AS surname,data_users.city AS city,"
 			+ "data_users.country AS country,data_users.email AS email,users.login AS login,"
 			+ "users.rating AS rating,users.id AS id,user_status.status AS status FROM users "
@@ -123,7 +123,7 @@ public class SQLHelper {
 
 	public static final String UPDATE_USER_PASSWORD_QUERY = "UPDATE users SET password = ? where id = ?";
 
-	public static final String DELETE_USER_QUERY = "DELETE FROM users WHERE login = ?";
+	public static final String DELETE_USER_BY_LOGIN_QUERY = "DELETE FROM users WHERE login = ?";
 	
 	public static final String INSERT_INTO_ORDERS_QUERY = "INSERT INTO orders (users_id,order_status_id, date) value(?,?,now())";
 	
@@ -179,6 +179,7 @@ public class SQLHelper {
 		try {
 			resultSet = preparedStatement.executeQuery();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			log.log(Level.ERROR, "Не получется взять ResultSet");
 			throw new DAOException("error while creating ResultSet", e);
 		}
